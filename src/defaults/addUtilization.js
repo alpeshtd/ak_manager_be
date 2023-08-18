@@ -131,8 +131,7 @@ const ADD_UTILIZATION_DATA = {
     ['utilizationById', 'Utilized By', ['utilizationById','name']],
     ['orderId', 'Order', ['orderId','name']],
     ['description', 'Description', 'description'],
-    ['actions', 'Actions', 'actions', {}, 'center'],
-    ['viewMore', 'Actions1', 'viewMore', {}, 'center']
+    ['actions', 'Actions', 'actions', {}, 'center']
   ]),
   getDispatchType: 'UTILIZATIONS_FETCH_REQUESTED',
   getQuery: `query Utilizations {

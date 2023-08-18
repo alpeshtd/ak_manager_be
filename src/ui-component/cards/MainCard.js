@@ -9,15 +9,21 @@ import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/materia
 const headerSX = {
   '& .MuiCardHeader-action': { mr: 0 },
   '@media (max-width: 900px)': {
-    padding: '10px',
+    padding: '10px'
   }
 };
 
 const cardSX = {
   '@media (max-width: 900px)': {
-    marginBottom: '10px',
+    marginBottom: '10px'
   }
-}
+};
+
+const respContentSX = {
+  '@media (max-width: 900px)': {
+    padding: '10px'
+  }
+};
 
 // ==============================|| CUSTOM MAIN CARD ||============================== //
 
@@ -63,7 +69,7 @@ const MainCard = forwardRef(
 
         {/* card content */}
         {content && (
-          <CardContent sx={contentSX} className={contentClass}>
+          <CardContent sx={{ ...contentSX, ...respContentSX }} className={contentClass}>
             {children}
           </CardContent>
         )}

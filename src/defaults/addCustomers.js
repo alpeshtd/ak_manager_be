@@ -55,7 +55,6 @@ const ADD_CUSTOMER_DATA = {
     ['address', 'Address', 'address'],
     ['mail', 'Mail', 'mail'],
     ['mobile', 'Mobile', 'mobile'],
-    ['viewMore', 'Details', 'viewMore'],
     ['actions', 'Actions', 'actions', {}, 'center']
   ]),
   getDispatchType: 'CUSTOMERS_FETCH_REQUESTED',
