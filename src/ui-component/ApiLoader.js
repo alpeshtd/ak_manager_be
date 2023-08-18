@@ -9,9 +9,11 @@ import { useEffect } from 'react';
 const ApiLoader = (props) => {
   const { showLoading, apiStatus, setShowLoading } = props;
   const [apiDoneContent, setApiDoneContent] = useState();
-
   useEffect(() => {
-    if (apiStatus == 'success') {
+    if (!apiStatus) {
+      return;
+    }
+    if (apiStatus[0] == 'success') {
       setApiDoneContent(
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <CheckCircleOutlineIcon color="success" sx={{ fontSize: 50 }} />
@@ -20,8 +22,8 @@ const ApiLoader = (props) => {
       );
       setTimeout(() => {
         setShowLoading(false);
-      }, 0);
-    } else if (apiStatus == 'failed') {
+      }, 1000);
+    } else if (apiStatus[0] == 'failed') {
       setApiDoneContent(
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <HighlightOffIcon sx={{ fontSize: 50, color: 'salmon' }} />
@@ -30,7 +32,7 @@ const ApiLoader = (props) => {
       );
       setTimeout(() => {
         setShowLoading(false);
-      }, 0);
+      }, 1000);
     }
   }, [apiStatus]);
 

@@ -71,7 +71,7 @@ const CustomTable = ({ tableHeadings, tableData, page }) => {
     setShowLoading(true);
     deleteDocument(docDeleteId, page)
       .then(() => {
-        setApiStatus('success');
+        setApiStatus(['success',docDeleteId]);
         dispatch({
           type: allDefaultData[page].getDispatchType,
           payload: {
@@ -81,7 +81,7 @@ const CustomTable = ({ tableHeadings, tableData, page }) => {
         });
       })
       .catch(() => {
-        setApiStatus('failed');
+        setApiStatus(['failed',docDeleteId]);
       });
   };
 
