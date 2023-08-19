@@ -1,5 +1,5 @@
 import { getOrder } from "api/api";
-import { formatTimestampToDate } from "utils/utils";
+import { formatTimestampToDate, getStatusComp } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -9,9 +9,10 @@ function createData(arr) {
       [arrItem[0]]: {
         label: arrItem[1],
         dataKey: arrItem[2],
-        sx: arrItem[3],
+        sx: arrItem[6],
         align: arrItem[4],
-        valFunc: arrItem[5]
+        valFunc: arrItem[5],
+        hideIn: arrItem[3],
       }
     };
   });
@@ -100,11 +101,12 @@ const ADD_ORDER_DATA = {
   },
   tableHeading: createData([
     // ['orderNo', 'Order No', 'id', { paddingLeft: '24px' }],
-    ['name', 'Name', 'name'],
+    ['name', 'Order', 'name', null, 'left', null,{ paddingLeft: '24px' }],
     ['customer', 'Customer', ['customer', 'name']],
-    ['orderT', 'Start Date', 'orderT',{},'left',formatTimestampToDate],
-    ['status', 'Status', ['status','label']],
-    ['actions', 'Actions', 'actions', {}, 'center']
+    ['status', 'Status', ['status','label'],null,'left', getStatusComp],
+    ['orderT', 'Start Date', 'orderT', null, 'left',formatTimestampToDate],
+    ['description', 'Description', 'description','table'],
+    ['actions', 'Actions', 'actions', 'details', 'center']
   ]),
   getDispatchType: 'ORDERS_FETCH_REQUESTED',
   getQuery: `query Orders {

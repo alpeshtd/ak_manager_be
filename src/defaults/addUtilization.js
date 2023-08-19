@@ -1,4 +1,5 @@
 import { getUtilization } from "api/api";
+import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -8,8 +9,10 @@ function createData(arr) {
       [arrItem[0]]: {
         label: arrItem[1],
         dataKey: arrItem[2],
-        sx: arrItem[3],
-        align: arrItem[4]
+        sx: arrItem[6],
+        align: arrItem[4],
+        valFunc: arrItem[5],
+        hideIn: arrItem[3],
       }
     };
   });
@@ -156,13 +159,14 @@ const ADD_UTILIZATION_DATA = {
     }
   },
   tableHeading: createData([
-    ['stockId', 'Stock', ['stockId','type'], { paddingLeft: '24px' }],
+    ['stockId', 'Stock', ['stockId','type'],null,'left',null,{ paddingLeft: '24px' }],
     ['quantity', 'Quantity', 'quantity'],
     ['rate', 'Rate', 'rate'],
-    ['utilizationById', 'Utilized By', ['utilizationById','name']],
     ['orderId', 'Order', ['orderId','name']],
-    ['description', 'Description', 'description'],
-    ['actions', 'Actions', 'actions', {}, 'center']
+    ['actions', 'Actions', 'actions', 'details', 'center'],
+    ['utilizationById', 'Utilized By', ['utilizationById','name'], 'table'],
+    ['utilizationT', 'Utilization Time', 'utilizationT', 'table','left',formatTimestampToDate],
+    ['description', 'Description', 'description','table'],
   ]),
   getDispatchType: 'UTILIZATIONS_FETCH_REQUESTED',
   getQuery: `query Utilizations {

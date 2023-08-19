@@ -70,7 +70,10 @@ const CustomTable = ({ tableHeadings, tableData, page }) => {
   }
 
   const getHead = (headData, th) => {
-    const { label, sx, align } = headData;
+    const { label, sx, align, hideIn } = headData;
+    if(hideIn && hideIn == 'table') {
+      return null;
+    }
     switch (th) {
       case 'actions':
         if (!allowedActions || !allowedActions.length) {
@@ -88,7 +91,10 @@ const CustomTable = ({ tableHeadings, tableData, page }) => {
   };
 
   const getCell = (headData, data, th) => {
-    const { dataKey, sx, align, valFunc } = headData;
+    const { dataKey, sx, align, valFunc, hideIn } = headData;
+    if(hideIn && hideIn == 'table') {
+      return null;
+    }
     let cellLabel;
     switch (dataKey) {
       case 'actions':

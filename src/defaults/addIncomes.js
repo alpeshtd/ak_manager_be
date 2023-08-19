@@ -1,4 +1,5 @@
 import { getIncomeSingle } from "api/api";
+import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -8,8 +9,10 @@ function createData(arr) {
       [arrItem[0]]: {
         label: arrItem[1],
         dataKey: arrItem[2],
-        sx: arrItem[3],
-        align: arrItem[4]
+        sx: arrItem[6],
+        align: arrItem[4],
+        valFunc: arrItem[5],
+        hideIn: arrItem[3],
       }
     };
   });
@@ -131,12 +134,14 @@ const ADD_INCOME_DATA = {
     },
   },
   tableHeading: createData([
-    ['customerId', 'Customer', ['customerId', 'name'], { paddingLeft: '24px' }],
+    ['customerId', 'Customer', ['customerId', 'name'],null,'left',null,{ paddingLeft: '24px' }],
     ['amount', 'Amount', 'amount'],
     ['receivedById', 'Recieved By', ['receivedById', 'name']],
     ['paymentMode', 'Payment Mode', ['paymentMode', 'label']],
-    ['description', 'Description', 'description'],
-    ['actions', 'Actions', 'actions', {}, 'center']
+    ['actions', 'Actions', 'actions', 'details', 'center'],
+    ['description', 'Description', 'description','table'],
+    ['incomeT', 'Date', 'incomeT','table','left',formatTimestampToDate],
+    ['orderId', 'Order', ['orderId', 'name'],'table'],
   ]),
   getDispatchType: 'INCOMES_FETCH_REQUESTED',
   getQuery: `query Incomes {

@@ -8,8 +8,10 @@ function createData(arr) {
       [arrItem[0]]: {
         label: arrItem[1],
         dataKey: arrItem[2],
-        sx: arrItem[3],
-        align: arrItem[4]
+        sx: arrItem[6],
+        align: arrItem[4],
+        valFunc: arrItem[5],
+        hideIn: arrItem[3],
       }
     };
   });
@@ -19,7 +21,6 @@ function createData(arr) {
 const getDataString = `{
   id
   userName
-  password
   firstName
   lastName
   mail
@@ -105,13 +106,13 @@ const ADD_USER_DATA = {
     }
   },
   tableHeading: createData([
-    ['userName', 'User Name', 'userName', { paddingLeft: '24px' }],
-    ['firstName', 'Name', 'firstName'],
-    ['lastName', 'Suname', 'lastName'],
+    ['userName', 'User Name', 'userName', null, 'left', null, { paddingLeft: '24px' }],
     ['userRoleId', 'Role', ['userRoleId', 'name']],
-    ['mail', 'Mail', 'mail'],
     ['mobile', 'Mobile', 'mobile'],
-    ['actions', 'Actions', 'actions', {}, 'center']
+    ['actions', 'Actions', 'actions', 'details', 'center'],
+    ['firstName', 'Name', 'firstName','table'],
+    ['lastName', 'Suname', 'lastName','table'],
+    ['mail', 'Mail', 'mail','table'],
   ]),
   getDispatchType: 'USERS_FETCH_REQUESTED',
   getQuery: `query {

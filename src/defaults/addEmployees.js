@@ -9,9 +9,10 @@ function createData(arr) {
       [arrItem[0]]: {
         label: arrItem[1],
         dataKey: arrItem[2],
-        sx: arrItem[3],
+        sx: arrItem[6],
         align: arrItem[4],
-        valFunc: arrItem[5]
+        valFunc: arrItem[5],
+        hideIn: arrItem[3]
       }
     };
   });
@@ -86,13 +87,13 @@ const ADD_EMPLOYEE_DATA = {
     }
   },
   tableHeading: createData([
-    ['name', 'Name', 'name', { paddingLeft: '24px' }],
+    ['name', 'Name', 'name',null,'left',null,{ paddingLeft: '24px' }],
     ['address', 'address', 'address'],
     ['position', 'Position', 'position'],
-    ['joiningT', 'Joining Date', 'joiningT',{},'left',formatTimestampToDate],
-    ['perDay', 'Per Day', 'perDay'],
     ['mobile', 'Mobile', 'mobile'],
-    ['actions', 'Actions', 'actions', {}, 'center']
+    ['actions', 'Actions', 'actions', 'details', 'center'],
+    ['joiningT', 'Joining Date', 'joiningT','table','left',formatTimestampToDate],
+    ['perDay', 'Per Day', 'perDay','table'],
   ]),
   getDispatchType: 'EMPLOYEES_FETCH_REQUESTED',
   getQuery: `query Employees {

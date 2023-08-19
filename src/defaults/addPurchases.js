@@ -1,5 +1,5 @@
 import { getPurchaseSingle } from "api/api";
-import { formatTimestampToDate } from "utils/utils";
+import { formatTimestampToDate, getStatusComp } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -9,9 +9,10 @@ function createData(arr) {
       [arrItem[0]]: {
         label: arrItem[1],
         dataKey: arrItem[2],
-        sx: arrItem[3],
+        sx: arrItem[6],
         align: arrItem[4],
-        valFunc: arrItem[5]
+        valFunc: arrItem[5],
+        hideIn: arrItem[3],
       }
     };
   });
@@ -264,10 +265,10 @@ const ADD_PURCHASE_DATA = {
       label: 'Status*',
       value: null,
       options: [
-        { label: 'requested', id: 'Requested', value: 'requested' },
-        { label: 'pending', id: 'Pending', value: 'pending' },
-        { label: 'approved', id: 'Approved', value: 'approved' },
-        { label: 'rejected', id: 'Rejected', value: 'rejected' }
+        { id: 'requested', label: 'Requested', value: 'requested' },
+        { id: 'pending', label: 'Pending', value: 'pending' },
+        { id: 'approved', label: 'Approved', value: 'approved' },
+        { id: 'rejected', label: 'Rejected', value: 'rejected' }
       ]
     },
     description: {
@@ -279,13 +280,19 @@ const ADD_PURCHASE_DATA = {
     }
   },
   tableHeading: createData([
-    ['purchaseTypeId', 'Stock', ['purchaseTypeId','type'], { paddingLeft: '24px' }],
+    ['purchaseTypeId', 'Stock', ['purchaseTypeId','type'],null,'left',null, { paddingLeft: '24px' }],
+    ['vendorId', 'Vendor', ['vendorId', 'name'], 'table'],
+    ['purchaseStatus', 'Status', ['purchaseStatus','label'], null,'left', getStatusComp],
     ['quantity', 'Quantity', 'quantity'],
     ['purchaseRate', 'Rate', 'purchaseRate'],
     ['totalAmount', 'Total', 'totalAmount'],
-    ['purchaseT', 'Date', 'purchaseT',{},'left',formatTimestampToDate],
-    ['description', 'Description', 'description'],
-    ['actions', 'Actions', 'actions', {}, 'center']
+    ['remainingAmount', 'Remaining Amount', 'remainingAmount', 'table'],
+    ['paymentMode', 'Payment Mode', ['paymentMode','label'], 'table'],
+    ['purchaseT', 'Date', 'purchaseT','table','left',formatTimestampToDate],
+    ['actions', 'Actions', 'actions', 'details', 'center'],
+    ['purchaseById', 'Purchase By', ['purchaseById','name'], 'table'],
+    ['purchaseConfirmedById', 'Confirmed By', ['purchaseConfirmedById','firstName'], 'table'],
+    ['description', 'Description', 'description','table']
   ]),
   getDispatchType: 'PURCHASES_FETCH_REQUESTED',
   getQuery: `query Purchases {

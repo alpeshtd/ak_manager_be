@@ -19,7 +19,7 @@ const DetailsPage = () => {
   const {
     state: { id, slug }
   } = useLocation();
-  console.log('Id slug', id, slug);
+
   useEffect(() => {
     if (!id || !slug) {
       return;
@@ -40,22 +40,25 @@ const DetailsPage = () => {
   }
 
   const getVal = (headData) => {
-    const { dataKey, valFunc } = headData;
+    const { dataKey, valFunc, hideIn } = headData;
+    if (hideIn && hideIn == 'details') {
+      return null;
+    }
     let cellLabel;
     switch (dataKey) {
-        case 'actions':
-        case 'viewMore':
-          cellLabel = null;
-          break;
-        default:
-          cellLabel = Array.isArray(dataKey) ? fetchVal(dataKey, details) : details[dataKey];
-          if (valFunc) {
-            cellLabel = valFunc(cellLabel);
-          }
-      }
-  
-      return cellLabel;
-  }
+      case 'actions':
+      case 'viewMore':
+        cellLabel = null;
+        break;
+      default:
+        cellLabel = Array.isArray(dataKey) ? fetchVal(dataKey, details) : details[dataKey];
+        if (valFunc) {
+          cellLabel = valFunc(cellLabel);
+        }
+    }
+
+    return cellLabel;
+  };
 
   return (
     <>
@@ -69,19 +72,28 @@ const DetailsPage = () => {
             </div>
             <Divider sx={{ marginTop: '10px', marginBottom: '10px' }} />
             <Grid container spacing={gridSpacing}>
-                {Object.keys(CONFIG_DATA.tableHeading).map(k => {
-                    const temoObj = CONFIG_DATA.tableHeading[k];
-                    return <Grid key={k} item lg={3} md={3} sm={4} xs={6}>
+              {Object.keys(CONFIG_DATA.tableHeading).map((k) => {
+                const temoObj = CONFIG_DATA.tableHeading[k];
+                if(temoObj.hideIn && temoObj.hideIn == 'details') {
+                    return null
+                }
+                return (
+                  <Grid key={k} item lg={3} md={3} sm={4} xs={6}>
                     <div style={{ fontWeight: 700 }}>{temoObj.label}</div>
                     <div>{getVal(temoObj)}</div>
                   </Grid>
-                })}
+                );
+              })}
             </Grid>
             {/* <Divider sx={{marginTop: '10px', marginBottom: '10px'}} /> */}
             <SubCard title="Change Log" sx={{ marginTop: '20px' }}>
               <div>
                 {details.changeLog.map((log, index) => {
-                  return <Card key={index} variant="outlined" sx={{marginBottom: '10px', p:1}}>{log}</Card>;
+                  return (
+                    <Card key={index} variant="outlined" sx={{ marginBottom: '10px', p: 1 }}>
+                      {log}
+                    </Card>
+                  );
                 })}
               </div>
             </SubCard>

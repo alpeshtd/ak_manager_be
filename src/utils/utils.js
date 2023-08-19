@@ -1,3 +1,4 @@
+import { Chip } from "@mui/material";
 import moment from "moment/moment";
 
 export function makeRandomId(length) {
@@ -51,3 +52,17 @@ export const fetchVal = (keyArr, dataObj) => {
   }
   return extractedVal;
 };
+
+export const getStatusComp = val => {
+  const chipColor = {
+    approved: 'success',
+    requested: 'primary',
+    pending: 'warning',
+    rejected: 'error',
+    'in pipeline': 'primary',
+    'In progress': 'primary',
+    complete: 'success',
+  }
+  const color = chipColor[val.toLowerCase()]
+  return <Chip label={val} color={color} sx={{ color: '#fff'}} />
+}

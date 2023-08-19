@@ -31,6 +31,7 @@ const getDataString = `{
   performedById {
     id
     userName
+    firstName
   }
 }`;
 
