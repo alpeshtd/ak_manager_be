@@ -1,3 +1,5 @@
+import { getUtilization } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -13,6 +15,34 @@ function createData(arr) {
   });
   return tempData;
 }
+
+const getDataString = `{
+  id
+  stockId {
+    id
+    type
+    unit
+    quantity
+    rate
+  }
+  quantity
+  rate
+  utilizationById {
+    id
+    name
+  }
+  utilizationT
+  orderId {
+    id
+    name
+  }
+  performedById {
+    id
+  }
+  performedT
+  description
+  changeLog
+}`;
 
 const ADD_UTILIZATION_DATA = {
   mainCardTitle: 'All Utilizations',
@@ -135,33 +165,11 @@ const ADD_UTILIZATION_DATA = {
   ]),
   getDispatchType: 'UTILIZATIONS_FETCH_REQUESTED',
   getQuery: `query Utilizations {
-    utilizations {
-      id
-      stockId {
-        id
-        type
-        unit
-        quantity
-        rate
-      }
-      quantity
-      rate
-      utilizationById {
-        id
-        name
-      }
-      utilizationT
-      orderId {
-        id
-        name
-      }
-      performedById {
-        id
-      }
-      performedT
-      description
-      changeLog
-    }
+    utilizations ${getDataString}
+  }`,
+  getSingleReq: (payload) => getUtilization(payload),
+  getSingleQuery: `query Utilization($id: ID!){
+    utilization(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddUtilization($stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
     addUtilization(stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {

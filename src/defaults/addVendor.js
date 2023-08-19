@@ -1,3 +1,5 @@
+import { getVendor } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -14,10 +16,28 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  name
+  mobile
+  mail
+  address
+  purchases {
+    id
+  }
+  changeLog
+  performedById {
+    id
+    firstName
+  }
+  performedT
+}`
+
 const ADD_VENDOR_DATA = {
   mainCardTitle: 'All Vendors',
   tableTitle: 'Vendors',
   slug: 'elements/vendor',
+  dbKey: 'vendor',
   storePath: ['elements', 'vendors'],
   label: 'Vendor',
   fields: {
@@ -55,27 +75,15 @@ const ADD_VENDOR_DATA = {
     ['address', 'Address', 'address'],
     ['mail', 'Mail', 'mail'],
     ['mobile', 'Mobile', 'mobile'],
-    ['viewMore', 'Details', 'viewMore'],
     ['actions', 'Actions', 'actions', {}, 'center']
   ]),
   getDispatchType: 'VENDORS_FETCH_REQUESTED',
   getQuery: `query Vendors {
-    vendors {
-      id
-      name
-      mobile
-      mail
-      address
-      purchases {
-        id
-      }
-      changeLog
-      performedById {
-        id
-        firstName
-      }
-      performedT
-    }
+    vendors ${getDataString}
+  }`,
+  getSingleReq: (payload) => getVendor(payload),
+  getSingleQuery: `query Vendor($id: ID!){
+    vendor(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddVendor($name: String!, $mobile: String, $mail: String, $address: String, $changeLog: [String], $performedById: String, $performedT: String) {
     addVendor(name: $name, mobile: $mobile, mail: $mail, address: $address, changeLog: $changeLog, performedById: $performedById, performedT: $performedT) {

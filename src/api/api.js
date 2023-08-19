@@ -37,7 +37,15 @@ export const getUserRoles = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
+export const getUserRole = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
 export const getUsers = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getUser = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
@@ -45,7 +53,15 @@ export const getVendors = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
+export const getVendor = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
 export const getCustomers = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getCustomer = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
@@ -53,7 +69,15 @@ export const getStocks = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
+export const getStock = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
 export const getUtilizations = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getUtilization = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
@@ -61,7 +85,15 @@ export const getPurchase = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
+export const getPurchaseSingle = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
 export const getIncome = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getIncomeSingle = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
@@ -69,7 +101,15 @@ export const getOrders = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
+export const getOrder = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
 export const getEmployees = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getEmployee = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 

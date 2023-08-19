@@ -89,10 +89,12 @@ export default function CustomizedMenus(props) {
           </MenuItem>
         )}
         {(allowedActions.includes('viewMore') || allowedActions.includes('superUser')) && (
-          <MenuItem onClick={handleClose} disableRipple>
-            <ArchiveIcon />
-            View More
-          </MenuItem>
+          <Link to={'/item/details'} state={{ id: data.id, slug: page }}>
+            <MenuItem onClick={handleClose} disableRipple>
+              <ArchiveIcon />
+              View More
+            </MenuItem>
+          </Link>
         )}
       </StyledMenu>
     </div>

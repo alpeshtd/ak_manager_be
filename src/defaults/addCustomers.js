@@ -1,3 +1,5 @@
+import { getCustomer } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -14,10 +16,28 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  name
+  mobile
+  mail
+  address
+  orders {
+    id
+  }
+  changeLog
+  performedById {
+    id
+    firstName
+  }
+  performedT
+}`
+
 const ADD_CUSTOMER_DATA = {
   mainCardTitle: 'All Customer',
   tableTitle: 'Customers',
   slug: 'elements/customer',
+  dbKey: 'customer',
   storePath: ['elements', 'customers'],
   label: 'Customer',
   fields: {
@@ -59,21 +79,11 @@ const ADD_CUSTOMER_DATA = {
   ]),
   getDispatchType: 'CUSTOMERS_FETCH_REQUESTED',
   getQuery: `query Customers {
-    customers {
-      id
-      name
-      mobile
-      mail
-      address
-      orders {
-        id
-      }
-      changeLog
-      performedById {
-        id
-      }
-      performedT
-    }
+    customers ${getDataString}
+  }`,
+  getSingleReq: (payload) => getCustomer(payload),
+  getSingleQuery: `query Customer($id: ID!){
+    customer(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddCustomer($name: String!, $mobile: String, $mail: String, $address: String, $changeLog: [String], $performedById: String, $performedT: String) {
     addCustomer(name: $name, mobile: $mobile, mail: $mail, address: $address, changeLog: $changeLog, performedById: $performedById, performedT: $performedT) {

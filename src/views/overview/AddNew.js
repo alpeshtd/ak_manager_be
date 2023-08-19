@@ -115,11 +115,11 @@ const AddNew = () => {
     setShowLoading(true);
 
     const keyValObj = {
-      performedById: appStore.user.id,
-      performedT: '' + new Date().getTime(),
+      performedById:  state.edit ? state.prevData.performedById.id : appStore.user.id,
+      performedT: state.edit ? state.prevData.performedT : '' + new Date().getTime(),
       ...(state && state.edit ? { id: state.prevData.id } : undefined),
       ...(state && state.edit
-        ? { changeLog: [JSON.stringify(changeLog), ...(state.prevData.changeLog ? state.prevData.changeLog : [])] }
+        ? { changeLog: [JSON.stringify({...changeLog, editor: appStore.user.userName}), ...(state.prevData.changeLog ? state.prevData.changeLog : [])] }
         : undefined)
     };
 
@@ -128,7 +128,7 @@ const AddNew = () => {
       keyValObj[field] = data.value;
     });
     const isAllFilled = Object.keys(keyValObj).every(k=>{
-      return !!keyValObj[k];
+      return !!(keyValObj[k] || keyValObj[k] == 0);
     })
     if(!isAllFilled) {
       setIsError(true);

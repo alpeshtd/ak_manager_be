@@ -1,3 +1,4 @@
+import { getPurchaseSingle } from "api/api";
 import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
@@ -17,10 +18,59 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  quantity
+  purchaseRate
+  totalAmount
+  vendorId {
+    id
+    name
+  }
+  purchaseById {
+    id
+    name
+  }
+  purchaseT
+  paidAmount
+  orderId {
+    id
+    name
+  }
+  remainingAmount
+  paymentMode {
+    id
+    label
+    value
+  }
+  description
+  purchaseTypeId {
+    id
+    type
+  }
+  purchaseStatus {
+    id
+    label
+    value
+  }
+  performedById {
+    id
+    firstName
+  }
+  performedT
+  transactionType
+  purchaseConfirmedById {
+    id
+    firstName
+  }
+  changeLog
+}`;
+
 const ADD_PURCHASE_DATA = {
   mainCardTitle: 'All Purchases',
   tableTitle: 'Purchases',
   slug: 'overview/purchase',
+  dbKey: 'purchase',
   storePath: ['overview', 'purchases'],
   label: 'Purchase',
   fields: {
@@ -239,53 +289,11 @@ const ADD_PURCHASE_DATA = {
   ]),
   getDispatchType: 'PURCHASES_FETCH_REQUESTED',
   getQuery: `query Purchases {
-    purchases {
-      id
-      quantity
-      purchaseRate
-      totalAmount
-      vendorId {
-        id
-        name
-      }
-      purchaseById {
-        id
-        name
-      }
-      purchaseT
-      paidAmount
-      orderId {
-        id
-        name
-      }
-      remainingAmount
-      paymentMode {
-        id
-        label
-        value
-      }
-      description
-      purchaseTypeId {
-        id
-        type
-      }
-      purchaseStatus {
-        id
-        label
-        value
-      }
-      performedById {
-        id
-        firstName
-      }
-      performedT
-      transactionType
-      purchaseConfirmedById {
-        id
-        firstName
-      }
-      changeLog
-    }
+    purchases ${getDataString}
+  }`,
+  getSingleReq: (payload) => getPurchaseSingle(payload),
+  getSingleQuery: `query Purchase($id: ID!){
+    purchase(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddPurchase($quantity: Float!, $purchaseRate: Float!, $totalAmount: Float!, $vendorId: String, $purchaseById: String, $purchaseT: String, $paidAmount: Float, $orderId: String, $remainingAmount: Float, $paymentMode: AccessInput, $description: String, $purchaseTypeId: String, $purchaseStatus: AccessInput, $performedById: String, $performedT: String, $transactionType: String, $purchaseConfirmedById: String, $changeLog: [String]) {
     addPurchase(quantity: $quantity, purchaseRate: $purchaseRate, totalAmount: $totalAmount, vendorId: $vendorId, purchaseById: $purchaseById, purchaseT: $purchaseT, paidAmount: $paidAmount, orderId: $orderId, remainingAmount: $remainingAmount, paymentMode: $paymentMode, description: $description, purchaseTypeId: $purchaseTypeId, purchaseStatus: $purchaseStatus, performedById: $performedById, performedT: $performedT, transactionType: $transactionType, purchaseConfirmedById: $purchaseConfirmedById, changeLog: $changeLog) {

@@ -6,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-import { makeRandomId } from 'utils/utils';
+import { fetchVal, makeRandomId } from 'utils/utils';
 import { deleteDocument } from 'api/api';
 import { useState } from 'react';
 import ApiLoader from './ApiLoader';
@@ -15,34 +15,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ConfirmationPopUp from './ConfirmationPopUp';
 import CustomizedMenus from './CustomMenu';
 import { useEffect } from 'react';
-
-const fetchVal = (keyArr, dataObj) => {
-  if (!dataObj) {
-    return null;
-  }
-  let extractedVal = { ...dataObj };
-  const keyLen = keyArr.length;
-  let isValid = true;
-  let pos = 0;
-  while (isValid && pos < keyLen) {
-    if (Array.isArray(keyArr[pos])) {
-      if (!extractedVal || !extractedVal.length) {
-        isValid = false;
-        extractedVal = null;
-        break;
-      }
-      extractedVal = extractedVal.map((v) => v[keyArr[pos][0]]);
-      break;
-    } else if (!extractedVal[keyArr[pos]]) {
-      isValid = false;
-      extractedVal = null;
-      break;
-    }
-    extractedVal = extractedVal[keyArr[pos]];
-    pos += 1;
-  }
-  return extractedVal;
-};
 
 const CustomTable = ({ tableHeadings, tableData, page }) => {
   const dispatch = useDispatch();

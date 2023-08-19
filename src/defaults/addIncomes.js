@@ -1,3 +1,5 @@
+import { getIncomeSingle } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -14,10 +16,42 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  amount
+  customerId {
+    id
+    name
+  }
+  transactionType
+  orderId {
+    id
+    name
+  }
+  incomeT
+  receivedById {
+    id
+    name
+  }
+  performedById {
+    id
+    firstName
+  }
+  performedT
+  description
+  paymentMode {
+    id
+    label
+    value
+  }
+  changeLog
+}`;
+
 const ADD_INCOME_DATA = {
   mainCardTitle: 'All Incomes',
   tableTitle: 'Incomes',
   slug: 'overview/income',
+  dbKey: 'income',
   storePath: ['overview', 'incomes'],
   label: 'Income',
   fields: {
@@ -106,36 +140,11 @@ const ADD_INCOME_DATA = {
   ]),
   getDispatchType: 'INCOMES_FETCH_REQUESTED',
   getQuery: `query Incomes {
-    incomes {
-      id
-      amount
-      customerId {
-        id
-        name
-      }
-      transactionType
-      orderId {
-        id
-        name
-      }
-      incomeT
-      receivedById {
-        id
-        name
-      }
-      performedById {
-        id
-        firstName
-      }
-      performedT
-      description
-      paymentMode {
-        id
-        label
-        value
-      }
-      changeLog
-    }
+    incomes ${getDataString}
+  }`,
+  getSingleReq: (payload) => getIncomeSingle(payload),
+  getSingleQuery: `query Income($id: ID!){
+    income(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddIncome($amount: Float!, $transactionType: String, $receivedById: String!, $customerId: String, $orderId: String, $incomeT: String, $performedById: String, $performedT: String, $description: String, $paymentMode: AccessInput, $changeLog: [String]) {
     addIncome(amount: $amount, transactionType: $transactionType, receivedById: $receivedById, customerId: $customerId, orderId: $orderId, incomeT: $incomeT, performedById: $performedById, performedT: $performedT, description: $description, paymentMode: $paymentMode, changeLog: $changeLog) {

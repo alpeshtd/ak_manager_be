@@ -1,3 +1,4 @@
+import { getEmployee } from "api/api";
 import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
@@ -17,10 +18,27 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  name
+  address
+  mobile
+  joiningT
+  position
+  perDay
+  performedById {
+    id
+    firstName
+  }
+  performedT
+  changeLog
+}`
+
 const ADD_EMPLOYEE_DATA = {
   mainCardTitle: 'All Employees',
   tableTitle: 'Employees',
   slug: 'elements/employee',
+  dbKey: 'employee',
   storePath: ['elements', 'employees'],
   label: 'Employee',
   fields: {
@@ -78,21 +96,11 @@ const ADD_EMPLOYEE_DATA = {
   ]),
   getDispatchType: 'EMPLOYEES_FETCH_REQUESTED',
   getQuery: `query Employees {
-    employees {
-      id
-      name
-      address
-      mobile
-      joiningT
-      position
-      perDay
-      performedById {
-        id
-        firstName
-      }
-      performedT
-      changeLog
-    }
+    employees ${getDataString}
+  }`,
+  getSingleReq: (payload) => getEmployee(payload),
+  getSingleQuery: `query Employee($id: ID!){
+    employee(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddEmployee($name: String, $address: String, $mobile: String, $joiningT: String, $position: String, $perDay: Int, $performedById: String, $performedT: String, $changeLog: [String]) {
     addEmployee(name: $name, address: $address, mobile: $mobile, joiningT: $joiningT, position: $position, perDay: $perDay, performedById: $performedById, performedT: $performedT, changeLog: $changeLog) {

@@ -1,3 +1,5 @@
+import { getUser } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -14,10 +16,32 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  userName
+  password
+  firstName
+  lastName
+  mail
+  mobile
+  userRoleId {
+    id
+    name
+  }
+  changeLog
+  performedT
+  performedById {
+    id
+    userName
+    firstName
+  }
+}`
+
 const ADD_USER_DATA = {
   mainCardTitle: 'All Users',
   tableTitle: 'Users',
   slug: 'elements/user',
+  dbKey: 'user',
   storePath: ['elements', 'users'],
   label: 'User',
   fields: {
@@ -91,25 +115,11 @@ const ADD_USER_DATA = {
   ]),
   getDispatchType: 'USERS_FETCH_REQUESTED',
   getQuery: `query {
-    users {
-      id
-      userName
-      password
-      firstName
-      lastName
-      mail
-      mobile
-      userRoleId {
-        id
-        name
-      }
-      changeLog
-      performedT
-      performedById {
-        id
-        userName
-      }
-    }
+    users ${getDataString}
+  }`,
+  getSingleReq: (payload) => getUser(payload),
+  getSingleQuery: `query User($id: ID!){
+    user(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddUser($userName: String!, $password: String!, $firstName: String!, $lastName: String!, $userRoleId: String!, $mail: String, $mobile: String, $changeLog: [String], $performedById: String, $performedT: String) {
     addUser(userName: $userName, password: $password, firstName: $firstName, lastName: $lastName, userRoleId: $userRoleId, mail: $mail, mobile: $mobile, changeLog: $changeLog, performedById: $performedById, performedT: $performedT) {

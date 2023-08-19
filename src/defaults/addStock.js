@@ -1,3 +1,5 @@
+import { getStock } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -14,10 +16,25 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  type
+  quantity
+  rate
+  unit
+  changeLog
+  performedById {
+    id
+    firstName
+  }
+  performedT
+}`
+
 const ADD_STOCK_DATA = {
   mainCardTitle: 'All Stock',
   tableTitle: 'Stocks',
   slug: 'elements/stock',
+  dbKey: 'stock',
   storePath: ['elements', 'stocks'],
   label: 'Stock',
   fields: {
@@ -59,18 +76,11 @@ const ADD_STOCK_DATA = {
   ]),
   getDispatchType: 'STOCKS_FETCH_REQUESTED',
   getQuery: `query Stocks {
-    stocks {
-      id
-      type
-      quantity
-      rate
-      unit
-      changeLog
-      performedById {
-        id
-      }
-      performedT
-    }
+    stocks ${getDataString}
+  }`,
+  getSingleReq: (payload) => getStock(payload),
+  getSingleQuery: `query Stock($id: ID!){
+    stock(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation Mutation($type: String, $quantity: Float, $unit: String, $rate: Float, $changeLog: [String], $performedById: String, $performedT: String) {
     addStock(type: $type, quantity: $quantity, unit: $unit, rate: $rate, changeLog: $changeLog, performedById: $performedById, performedT: $performedT) {

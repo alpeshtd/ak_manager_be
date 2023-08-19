@@ -1,3 +1,4 @@
+import { getOrder } from "api/api";
 import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
@@ -17,10 +18,33 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  name
+  customer {
+    id
+    name
+  }
+  orderT
+  performedById {
+    id
+    firstName
+  }
+  performedT
+  changeLog
+  description
+  status {
+    label
+    id
+    value
+  }
+}`;
+
 const ADD_ORDER_DATA = {
   mainCardTitle: 'All Order',
   tableTitle: 'Orders',
   slug: 'overview/order',
+  dbKey: 'order',
   storePath: ['overview', 'orders'],
   label: 'Order',
   fields: {
@@ -84,27 +108,11 @@ const ADD_ORDER_DATA = {
   ]),
   getDispatchType: 'ORDERS_FETCH_REQUESTED',
   getQuery: `query Orders {
-    orders {
-      id
-      name
-      customer {
-        id
-        name
-      }
-      orderT
-      performedById {
-        id
-        firstName
-      }
-      performedT
-      changeLog
-      description
-      status {
-        label
-        id
-        value
-      }
-    }
+    orders ${getDataString}
+  }`,
+  getSingleReq: (payload) => getOrder(payload),
+  getSingleQuery: `query Order($id: ID!){
+    order(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation AddOrder($name: String!, $customer: String, $orderT: String, $performedById: String, $performedT: String, $changeLog: [String], $description: String, $status: AccessInput) {
     addOrder(name: $name, customer: $customer, orderT: $orderT, performedById: $performedById, performedT: $performedT, changeLog: $changeLog, description: $description, status: $status) {

@@ -1,5 +1,7 @@
 // import { addUserRole } from "api/api";
 
+import { getUserRole } from "api/api";
+
 function createData(arr) {
   let tempData = {};
   arr.forEach((arrItem) => {
@@ -16,10 +18,27 @@ function createData(arr) {
   return tempData;
 }
 
+const getDataString = `{
+  id
+  name
+  performedT
+  access {
+    label
+    id
+    value
+  }
+  changeLog
+  performedById {
+    id
+    userName
+  }
+}`;
+
 const ADD_USER_ROLE_DATA = {
   mainCardTitle: 'All User Roles',
   tableTitle: 'User Roles',
   label: 'User Role',
+  dbKey: 'userRole',
   slug: 'elements/userRole',
   storePath: ['elements', 'userRoles'],
   fields: {
@@ -52,21 +71,11 @@ const ADD_USER_ROLE_DATA = {
   ]),
   getDispatchType: 'USER_ROLE_FETCH_REQUESTED',
   getQuery: `query {
-    userRoles {
-      id
-      name
-      performedT
-      access {
-        label
-        id
-        value
-      }
-      changeLog
-      performedById {
-        id
-        userName
-      }
-    }
+    userRoles ${getDataString}
+  }`,
+  getSingleReq: (payload) => getUserRole(payload),
+  getSingleQuery: `query UserRole($id: ID!){
+    userRole(id: $id) ${getDataString}
   }`,
   addNewQuery: `mutation Mutation($name: String!, $access: [AccessInput], $performedById: String, $performedT: String) {
     addUserRole(name: $name, access: $access, performedById: $performedById, performedT: $performedT) {

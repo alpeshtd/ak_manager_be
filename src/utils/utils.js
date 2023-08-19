@@ -23,3 +23,31 @@ export function generateVariables(keyValObj) {
 export function formatTimestampToDate(timestamp, format='DD MMM YYYY') {
   return moment(+timestamp).format(format)
 }
+
+export const fetchVal = (keyArr, dataObj) => {
+  if (!dataObj) {
+    return null;
+  }
+  let extractedVal = { ...dataObj };
+  const keyLen = keyArr.length;
+  let isValid = true;
+  let pos = 0;
+  while (isValid && pos < keyLen) {
+    if (Array.isArray(keyArr[pos])) {
+      if (!extractedVal || !extractedVal.length) {
+        isValid = false;
+        extractedVal = null;
+        break;
+      }
+      extractedVal = extractedVal.map((v) => v[keyArr[pos][0]]);
+      break;
+    } else if (!extractedVal[keyArr[pos]]) {
+      isValid = false;
+      extractedVal = null;
+      break;
+    }
+    extractedVal = extractedVal[keyArr[pos]];
+    pos += 1;
+  }
+  return extractedVal;
+};
