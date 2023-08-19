@@ -48,6 +48,7 @@ const ADD_UTILIZATION_DATA = {
   mainCardTitle: 'All Utilizations',
   tableTitle: 'Utilizations',
   slug: 'overview/utilization',
+  dbKey: 'utilization',
   storePath: ['overview', 'utilizations'],
   label: 'Utilization',
   fields: {
