@@ -18,6 +18,11 @@ const overviewReducer = (state = initialState, action) => {
         ...state,
         purchases: action.purchases
       };
+    case actionTypes.EXPENSES_FETCH_SUCCEEDED:
+      return {
+        ...state,
+        expenses: action.expenses
+      };
     case actionTypes.INCOME_FETCH_SUCCEEDED:
       return {
         ...state,

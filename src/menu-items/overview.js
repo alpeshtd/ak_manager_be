@@ -51,6 +51,14 @@ const overview = {
       icon: icons.IconCurrencyRupee,
       url: '/overview/incomes',
       breadcrumbs: false
+    },
+    {
+      id: 'expense',
+      title: 'Expense',
+      type: 'item',
+      icon: icons.IconCurrencyRupee,
+      url: '/overview/expenses',
+      breadcrumbs: false
     }
   ]
 };

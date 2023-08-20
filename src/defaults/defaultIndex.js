@@ -1,5 +1,6 @@
 import ADD_CUSTOMER_DATA from './addCustomers';
 import ADD_EMPLOYEE_DATA from './addEmployees';
+import ADD_EXPENSE_DATA from './addExpenses';
 import ADD_INCOME_DATA from './addIncomes';
 import ADD_ORDER_DATA from './addOrderFields';
 import ADD_PURCHASE_DATA from './addPurchases';
@@ -20,7 +21,8 @@ const allDefaultData = {
   'elements/vendor': ADD_VENDOR_DATA,
   'elements/customer': ADD_CUSTOMER_DATA,
   'elements/stock': ADD_STOCK_DATA,
-  'elements/employee': ADD_EMPLOYEE_DATA
+  'elements/employee': ADD_EMPLOYEE_DATA,
+  'overview/expense': ADD_EXPENSE_DATA
 };
 
 export default allDefaultData;

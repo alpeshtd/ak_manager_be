@@ -98,6 +98,15 @@ const MainRoutes = {
       path: 'overview',
       children: [
         {
+          path: 'expenses',
+          element: <PageViewTable slug='overview/expense' />
+        }
+      ]
+    },
+    {
+      path: 'overview',
+      children: [
+        {
           path: 'add-order',
           element: <AddNew />
         }

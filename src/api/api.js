@@ -3,6 +3,7 @@ import allDefaultData from 'defaults/defaultIndex';
 import { store } from 'store';
 
 const APIURL = 'https://comanager.onrender.com/'
+// const APIURL = 'http://localhost:4000/'
 
 const api = ({ method = 'POST', url = '', setheaders = {}, reqPayload = {} } = {}) => {
   const appState = store;
@@ -94,6 +95,14 @@ export const getIncome = (reqPayload = {}) => {
 };
 
 export const getIncomeSingle = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getExpenses = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+export const getExpense = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 

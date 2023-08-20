@@ -165,7 +165,7 @@ const NotificationSection = () => {
                             <Typography variant="subtitle1">All Notification</Typography>
                             <Chip
                               size="small"
-                              label={appStore.notifications.filter(item => !['approved', 'rejected'].includes(item.data.purchaseStatus.value)).length}
+                              label={appStore.notifications.length}
                               sx={{
                                 color: theme.palette.background.default,
                                 bgcolor: theme.palette.warning.dark

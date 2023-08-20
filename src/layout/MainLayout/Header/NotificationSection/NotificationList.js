@@ -20,8 +20,8 @@ import {
 
 // assets
 import { IconBrandTelegram, IconBuildingStore, IconMailbox, IconPhoto } from '@tabler/icons';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+// import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import User1 from 'assets/images/users/user-round.svg';
 import { formatTimestampToDate } from 'utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,6 +29,7 @@ import allDefaultData from 'defaults/defaultIndex';
 import { updateNotifications } from 'api/api';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import Notification from './Notifiaction';
 
 // styles
 const ListItemWrapper = styled('div')(() => ({
@@ -106,7 +107,8 @@ const NotificationList = (props) => {
 
   const actionHandler = (action, type, data, id) => {
     const DEF_RELATION = {
-      Purchase: 'overview/purchase'
+      Purchase: 'overview/purchase',
+      Expense: 'overview/expense',
     };
     dispatch({
       type: allDefaultData[DEF_RELATION[type]].getDispatchType,
@@ -178,7 +180,8 @@ const NotificationList = (props) => {
                   </Grid>
                 </ListItemSecondaryAction>
               </ListItem>
-              <Grid container direction="column" className="list-container">
+              <Notification data={data} isCEO={isCEO} actionHandler={actionHandler} type={type} _id={_id} />
+              {/* <Grid container direction="column" className="list-container">
                 <Grid item xs={12} sx={{ pb: 2 }}>
                   <Typography variant="subtitle2">
                     <div>Amount: <b>{data.totalAmount}</b>   <span>Paid: <b>{data.paidAmount}</b></span></div>
@@ -229,7 +232,7 @@ const NotificationList = (props) => {
                     </Grid>
                   )}
                 </Grid>
-              </Grid>
+              </Grid> */}
             </ListItemWrapper>
             <Divider />
           </div>

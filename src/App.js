@@ -23,6 +23,7 @@ import ADD_UTILIZATION_DATA from 'defaults/addUtilization';
 import ADD_PURCHASE_DATA from 'defaults/addPurchases';
 import ADD_INCOME_DATA from 'defaults/addIncomes';
 import { useNavigate } from 'react-router';
+import ADD_EXPENSE_DATA from 'defaults/addExpenses';
 // import startSocket from './api/socket';
 
 // ==============================|| APP ||============================== //
@@ -119,6 +120,13 @@ const App = () => {
       type: ADD_PURCHASE_DATA.getDispatchType,
       payload: {
         query: ADD_PURCHASE_DATA.getQuery,
+        variables: {}
+      }
+    });
+    dispatch({
+      type: ADD_EXPENSE_DATA.getDispatchType,
+      payload: {
+        query: ADD_EXPENSE_DATA.getQuery,
         variables: {}
       }
     });

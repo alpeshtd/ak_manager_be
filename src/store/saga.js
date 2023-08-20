@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { getUserRoles, getVendors, getUsers, getCustomers, getStocks, getUtilizations, getPurchase, getIncome, getOrders, getEmployees, getNotifications, performLogin, getLoggedUser } from 'api/api';
+import { getUserRoles, getVendors, getUsers, getCustomers, getStocks, getUtilizations, getPurchase, getIncome, getOrders, getEmployees, getNotifications, performLogin, getLoggedUser, getExpenses } from 'api/api';
 
 function* doLogin(action) {
   try {
@@ -82,6 +82,15 @@ function* fetchPurchases(action) {
   }
 }
 
+function* fetchExpenses(action) {
+  try {
+    const expense = yield call(getExpenses, action.payload);
+    yield put({ type: 'EXPENSES_FETCH_SUCCEEDED', expenses: expense.expenses });
+  } catch (e) {
+    yield put({ type: 'EXPENSES_FETCH_FAILED', message: e.message });
+  }
+}
+
 function* fetchIncomes(action) {
   try {
     const income = yield call(getIncome, action.payload);
@@ -126,6 +135,7 @@ function* mySaga() {
   yield takeLatest('STOCKS_FETCH_REQUESTED', fetchStocks);
   yield takeLatest('UTILIZATIONS_FETCH_REQUESTED', fetchUtilizations);
   yield takeLatest('PURCHASES_FETCH_REQUESTED', fetchPurchases);
+  yield takeLatest('EXPENSES_FETCH_REQUESTED', fetchExpenses);
   yield takeLatest('INCOMES_FETCH_REQUESTED', fetchIncomes);
   yield takeLatest('ORDERS_FETCH_REQUESTED', fetchOrders);
   yield takeLatest('EMPLOYEES_FETCH_REQUESTED', fetchEmployees);
