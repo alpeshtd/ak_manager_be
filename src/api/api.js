@@ -40,6 +40,10 @@ export const getUtilizationsStats = (reqPayload = {}) => {
   return api({ reqPayload });
 };
 
+export const commonApiRequest = (reqPayload = {}) => {
+  return api({ reqPayload });
+}
+
 // Add APIs
 
 export const getUserRoles = (reqPayload = {}) => {

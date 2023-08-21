@@ -93,7 +93,8 @@ export const createChartData = (data) => {
   const seriesData = seriesKeys.map(({name, key})=> {
     const tempData = { name, data: [] };
     stocks.forEach((stock) => {
-      tempData.data.push(((stock[key]/stock.totalUtilizations) * 100).toFixed(2));
+      // tempData.data.push(((stock[key]/stock.totalUtilizations) * 100).toFixed(2));
+      tempData.data.push(stock[key]);
     });
     return tempData
   })

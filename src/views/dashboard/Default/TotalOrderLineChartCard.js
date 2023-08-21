@@ -17,7 +17,10 @@ import ChartDataYear from './chart-data/total-order-year-line-chart';
 
 // assets
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
@@ -65,15 +68,38 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 const TotalOrderLineChartCard = ({ isLoading }) => {
   const theme = useTheme();
-
-  const [timeValue, setTimeValue] = useState(false);
-  const handleChangeTime = (event, newValue) => {
+  const dispatch = useDispatch();
+  const appStore = useSelector(store => store.app)
+  const [timeValue, setTimeValue] = useState('month');
+  const handleChangeTime = (newValue) => {
     setTimeValue(newValue);
   };
 
+  useEffect(()=>{
+    dispatch({
+      type: "ORDERS_STATS_FETCH_REQUESTED",
+      payload: {
+        query: `query OrderStats($fromT: String, $toT: String) {
+          orderStats(fromT: $fromT, toT: $toT) {
+            total
+            completed
+            inProgress
+            inPipeline
+            pending
+            rejected
+          }
+        }`,
+        variables: {
+          fromT: moment().startOf(timeValue).format('x'),
+          toT: moment().endOf(timeValue).format('x'),
+        }
+      }
+    })
+  },[timeValue])
+
   return (
     <>
-      {isLoading ? (
+      {isLoading || !appStore.ordersStats ? (
         <SkeletonTotalOrderCard />
       ) : (
         <CardWrapper border={false} content={false}>
@@ -98,19 +124,19 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                   <Grid item>
                     <Button
                       disableElevation
-                      variant={timeValue ? 'contained' : 'text'}
+                      variant={timeValue == 'month' ? 'contained' : 'text'}
                       size="small"
                       sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, true)}
+                      onClick={() => handleChangeTime('month')}
                     >
                       Month
                     </Button>
                     <Button
                       disableElevation
-                      variant={!timeValue ? 'contained' : 'text'}
+                      variant={timeValue == 'year' ? 'contained' : 'text'}
                       size="small"
                       sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, false)}
+                      onClick={() => handleChangeTime('year')}
                     >
                       Year
                     </Button>
@@ -122,11 +148,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                   <Grid item xs={6}>
                     <Grid container alignItems="center">
                       <Grid item>
-                        {timeValue ? (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>$108</Typography>
-                        ) : (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>$961</Typography>
-                        )}
+                        <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>{appStore.ordersStats.total}</Typography>
                       </Grid>
                       <Grid item>
                         <Avatar
@@ -137,7 +159,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                             color: theme.palette.primary.dark
                           }}
                         >
-                          <ArrowDownwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
+                          <ArrowUpwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
                         </Avatar>
                       </Grid>
                       <Grid item xs={12}>
