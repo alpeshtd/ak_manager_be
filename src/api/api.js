@@ -34,6 +34,14 @@ const api = ({ method = 'POST', url = '', setheaders = {}, reqPayload = {} } = {
   });
 };
 
+// Custom APIs
+
+export const getUtilizationsStats = (reqPayload = {}) => {
+  return api({ reqPayload });
+};
+
+// Add APIs
+
 export const getUserRoles = (reqPayload = {}) => {
   return api({ reqPayload });
 };

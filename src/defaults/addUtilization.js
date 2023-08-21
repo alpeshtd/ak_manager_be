@@ -1,5 +1,5 @@
 import { getUtilization } from "api/api";
-import { formatTimestampToDate } from "utils/utils";
+import { formatTimestampToDate, getStatusComp } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -38,6 +38,11 @@ const getDataString = `{
   orderId {
     id
     name
+  }
+  utilizationStatus {
+    id
+    label
+    value
   }
   performedById {
     id
@@ -150,6 +155,17 @@ const ADD_UTILIZATION_DATA = {
       label: 'Date',
       value: '' + new Date().getTime(),
     },
+    utilizationStatus: {
+      type: 'select',
+      placeHolder: 'Status*',
+      label: 'Status*',
+      value: null,
+      options: [
+        { id: 'inProgress', label: 'In progress', value: 'inProgress' },
+        { id: 'approved', label: 'Approved', value: 'approved' },
+        { id: 'rejected', label: 'Rejected', value: 'rejected' }
+      ]
+    },
     description: {
       type: 'textArea',
       placeHolder: 'Some details',
@@ -160,6 +176,7 @@ const ADD_UTILIZATION_DATA = {
   },
   tableHeading: createData([
     ['stockId', 'Stock', ['stockId','type'],null,'left',null,{ paddingLeft: '24px' }],
+    ['utilizationStatus','Status',['utilizationStatus','label'],null,'left',getStatusComp],
     ['quantity', 'Quantity', 'quantity'],
     ['rate', 'Rate', 'rate'],
     ['orderId', 'Order', ['orderId','name']],
@@ -176,13 +193,13 @@ const ADD_UTILIZATION_DATA = {
   getSingleQuery: `query Utilization($id: ID!){
     utilization(id: $id) ${getDataString}
   }`,
-  addNewQuery: `mutation AddUtilization($stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
-    addUtilization(stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
+  addNewQuery: `mutation AddUtilization($stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $utilizationStatus: AccessInput, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
+    addUtilization(stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, utilizationStatus: $utilizationStatus, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
       id
     }
   }`,
-  updateQuery: `mutation UpdateUtilization($id: ID!, $stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
-    updateUtilization(id: $id, stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
+  updateQuery: `mutation UpdateUtilization($id: ID!, $stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $utilizationStatus: AccessInput, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
+    updateUtilization(id: $id, stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, utilizationStatus: $utilizationStatus, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
       id
     }
   }`,

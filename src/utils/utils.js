@@ -60,7 +60,7 @@ export const getStatusComp = val => {
     pending: 'warning',
     rejected: 'error',
     'in pipeline': 'primary',
-    'In progress': 'primary',
+    'in progress': 'primary',
     complete: 'success',
   }
   const color = chipColor[val.toLowerCase()]

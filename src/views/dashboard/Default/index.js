@@ -54,7 +54,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Grid>
-      <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '100%', background: '#ffffffc7', zIndex: 20}}><span style={{position:'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', fontSize: 40, lineHeight: '44px'}}>Coming Soon...</span></div>
+      {/* <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '100%', background: '#ffffffc7', zIndex: 20}}><span style={{position:'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', fontSize: 40, lineHeight: '44px'}}>Coming Soon...</span></div> */}
     </div>
   );
 };

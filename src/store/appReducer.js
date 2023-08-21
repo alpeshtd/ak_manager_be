@@ -21,6 +21,11 @@ const appReducer = (state = initialState, action) => {
         ...state,
         loggedUserRole: action.payload
       }
+    case actionTypes.UTILIZATIONS_STATS_FETCH_SUCCEEDED:
+      return {
+        ...state,
+        utilizationsStats: action.utilizationsStats
+      }
     default:
       return state;
   }
