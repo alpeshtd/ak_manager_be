@@ -1,26 +1,12 @@
 const statsTypeDefs = `
-  type UtilizationStock {
+  type orderData {
     id: String
     name: String,
-    totalUtilizations: Int,
-    totalApproved: Int,
-    totalRejected: Int,
-    totalInProgress: Int,
-    totalCost: Int,
-    approvedQtyCost: Int,
-    rejectedQtyCost: Int,
-    inProgressQtyCost: Int
+    totalUtilization: Int,
+    totalIncome: Int
   }
-  type UtilizationStats {
-    totalUtilizations: Int,
-    totalApproved: Int,
-    totalRejected: Int,
-    totalInProgress: Int,
-    totalCost: Int,
-    approvedQtyCost: Int,
-    rejectedQtyCost: Int,
-    inProgressQtyCost: Int,
-    stocks: [UtilizationStock],
+  type orderProfitStats {
+    ordersData: [orderData],
   }
   type OrderStats {
     total: Int,
@@ -33,15 +19,29 @@ const statsTypeDefs = `
   type IncomeExpenseStats {
     totalIncome: Int,
     totalExpense: Int,
-    paidExpense: Int,
-    remainingExpense: Int
+    estimatedIncome: Int,
+  }
+  type orderTransactions {
+    id: ID,
+    estimated: Float,
+    name: String,
+    description: String,
+    orderUtilizations: [Utilization],
+    orderIncomes: [Income]
+  }
+  type vendorTransactions {
+    name: String,
+    vendorPurchases: [Purchase],
+    vendorExpenses: [Expense]
   }
 `;
 
 const statsQueryDefs = `
-    utilizationStats(fromT: String, toT: String): UtilizationStats,
+    orderProfitStats(fromT: String, toT: String): orderProfitStats,
     orderStats(fromT: String, toT: String): OrderStats,
     incomeExpenseStats(fromT: String, toT: String): IncomeExpenseStats,
+    orderTransactions(id: ID): [orderTransactions],
+    vendorTransactions(id: ID): [vendorTransactions],
 `
 
 module.exports = { statsTypeDefs, statsQueryDefs };

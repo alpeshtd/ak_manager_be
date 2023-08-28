@@ -2,41 +2,29 @@ const {statsTypeDefs, statsQueryDefs} = require('./statsTypeDefs')
 
 const typeDefs = `
   type Purchase {
-    id: ID
+    id: ID,
+    item: String,
     quantity: Float,
     purchaseRate: Float,
     totalAmount: Float,
     vendorId: Vendor,
-    purchaseById: Employee,
     purchaseT: String,
-    paidAmount: Float,
-    orderId: Order,
-    remainingAmount: Float,
-    paymentMode: Access,
     description: String,
-    purchaseTypeId: Stock,
-    purchaseStatus: Access,
     performedById: User,
     performedT: String,
     transactionType: String,
-    purchaseConfirmedById: User,
     changeLog: [String]
   }
 
   type Expense {
     id: ID
     amount: Float,
-    expenseById: Employee,
     expenseT: String,
-    paidAmount: Float,
-    orderId: Order,
-    remainingAmount: Float,
+    vendorId: Vendor,
     paymentMode: Access,
     description: String,
-    expenseStatus: Access,
     performedById: User,
     performedT: String,
-    expenseConfirmedById: User,
     changeLog: [String]
   }
 
@@ -53,13 +41,11 @@ const typeDefs = `
 
   type Utilization {
     id: ID,
-    stockId: Stock,
+    item: String,
     quantity: Float,
     rate: Float,
-    utilizationById: Employee,
     utilizationT: String,
     orderId: Order,
-    utilizationStatus: Access,
     performedById: User,
     performedT: String,
     description: String,
@@ -69,11 +55,9 @@ const typeDefs = `
   type Income {
     id: ID,
     amount: Float,
-    customerId: Customer,
     transactionType: String,
     orderId: Order,
     incomeT: String,
-    receivedById: Employee,
     performedById: User,
     performedT: String,
     description: String,
@@ -130,6 +114,7 @@ const typeDefs = `
 
   type Order {
     id: ID,
+    estimated: Float,
     name: String!,
     customer: Customer,
     orderT: String,
@@ -197,75 +182,51 @@ const typeDefs = `
   type Mutation {
     addPurchase(
         quantity: Float!,
+        item: String,
         purchaseRate: Float!,
         totalAmount: Float!,
         vendorId: String,
-        purchaseById: String,
         purchaseT: String,
-        paidAmount: Float,
-        orderId: String,
-        remainingAmount: Float,
-        paymentMode: AccessInput,
         description: String,
-        purchaseTypeId: String,
-        purchaseStatus: AccessInput,
         performedById: String,
         performedT: String,
         transactionType: String,
-        purchaseConfirmedById: String,
         changeLog: [String]
     ): Purchase
     updatePurchase(
         id: ID!,
+        item: String,
         quantity: Float,
         purchaseRate: Float,
         totalAmount: Float,
         vendorId: String,
-        purchaseById: String,
         purchaseT: String,
-        paidAmount: Float,
-        orderId: String,
-        remainingAmount: Float,
-        paymentMode: AccessInput,
         description: String,
-        purchaseTypeId: String,
-        purchaseStatus: AccessInput,
         performedById: String,
         performedT: String,
         transactionType: String,
-        purchaseConfirmedById: String,
         changeLog: [String]
     ): Purchase
     deletePurchase( id: ID!): Purchase
     addExpense(
       amount: Float,
-      expenseById: String,
       expenseT: String,
-      paidAmount: Float,
-      orderId: String,
-      remainingAmount: Float,
+      vendorId: String,
       paymentMode: AccessInput,
       description: String,
-      expenseStatus: AccessInput,
       performedById: String,
       performedT: String,
-      expenseConfirmedById: String,
       changeLog: [String]
     ): Expense
     updateExpense(
       id: ID!,
       amount: Float,
-      expenseById: String,
       expenseT: String,
-      paidAmount: Float,
-      orderId: String,
-      remainingAmount: Float,
+      vendorId: String,
       paymentMode: AccessInput,
       description: String,
-      expenseStatus: AccessInput,
       performedById: String,
       performedT: String,
-      expenseConfirmedById: String,
       changeLog: [String]
     ): Expense
     deleteExpense( id: ID!): Expense
@@ -290,13 +251,11 @@ const typeDefs = `
     ): Stock
     deleteStock( id: ID!): Stock
     addUtilization(
-        stockId: String,
+        item: String,
         quantity: Float,
         rate: Float,
-        utilizationById: String,
         utilizationT: String,
         orderId: String,
-        utilizationStatus: AccessInput,
         performedById: String,
         performedT: String,
         description: String,
@@ -304,13 +263,11 @@ const typeDefs = `
     ): Utilization
     updateUtilization(
         id: ID!,
-        stockId: String,
+        item: String,
         quantity: Float,
         rate: Float,
-        utilizationById: String,
         utilizationT: String,
         orderId: String,
-        utilizationStatus: AccessInput,
         performedById: String,
         performedT: String,
         description: String,
@@ -319,11 +276,9 @@ const typeDefs = `
     deleteUtilization(id: ID!) : Utilization
     addIncome(
         amount: Float!,
-        customerId: String,
         transactionType: String,
         orderId: String,
         incomeT: String,
-        receivedById: String!,
         performedById: String,
         performedT: String,
         description: String,
@@ -333,11 +288,9 @@ const typeDefs = `
     updateIncome(
         id: ID!,
         amount: Float,
-        customerId: String,
         transactionType: String,
         orderId: String,
         incomeT: String,
-        receivedById: String,
         performedById: String,
         performedT: String,
         description: String,
@@ -409,6 +362,7 @@ const typeDefs = `
     deleteCustomer(id: ID!): Customer
     addOrder(
         name: String!,
+        estimated: Float,
         customer: String,
         orderT: String,
         performedById: String,
@@ -420,6 +374,7 @@ const typeDefs = `
     updateOrder(
         id: ID!,
         name: String,
+        estimated: Float,
         customer: String,
         orderT: String,
         performedById: String,

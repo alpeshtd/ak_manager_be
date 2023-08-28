@@ -21,58 +21,38 @@ const resolvers = {
     purchases: async () =>
       await Purchase.find({})
         .populate("vendorId")
-        .populate("purchaseTypeId")
-        .populate("orderId")
-        .populate("purchaseById")
-        .populate("performedById")
-        .populate("purchaseConfirmedById"),
+        .populate("performedById"),
     purchase: async (parent, args) =>
       await Purchase.findById(args.id)
         .populate("vendorId")
-        .populate("purchaseTypeId")
-        .populate("orderId")
-        .populate("purchaseById")
-        .populate("performedById")
-        .populate("purchaseConfirmedById"),
+        .populate("performedById"),
     expenses: async () =>
       await Expense.find({})
-        .populate("orderId")
-        .populate("expenseById")
-        .populate("performedById")
-        .populate("expenseConfirmedById"),
+        .populate("vendorId")
+        .populate("performedById"),
     expense: async (parent, args) =>
       await Expense.findById(args.id)
-        .populate("orderId")
-        .populate("expenseById")
-        .populate("performedById")
-        .populate("expenseConfirmedById"),
+        .populate("vendorId")
+        .populate("performedById"),
     stocks: async () => await Stock.find({}).populate("performedById"),
     stock: async (parent, args) =>
       await Stock.findById(args.id).populate("performedById"),
     utilizations: async () =>
       await Utilization.find({})
-        .populate("stockId")
-        .populate("utilizationById")
         .populate("performedById")
         .populate("orderId"),
     utilization: async (parent, args) =>
       await Utilization.findById(args.id)
-        .populate("stockId")
-        .populate("utilizationById")
         .populate("performedById")
         .populate("orderId"),
     incomes: async () =>
       await Income.find({})
-        .populate("customerId")
         .populate("orderId")
-        .populate("performedById")
-        .populate("receivedById"),
+        .populate("performedById"),
     income: async (parent, args) =>
       await Income.findById(args.id)
-        .populate("customerId")
         .populate("orderId")
-        .populate("performedById")
-        .populate("receivedById"),
+        .populate("performedById"),
     users: async () =>
       await User.find({}).populate("userRoleId").populate("performedById"),
     user: async (parent, args) =>
@@ -109,109 +89,43 @@ const resolvers = {
     addPurchase: async (parent, args) => {
       const {
         quantity,
+        item,
         purchaseRate,
         totalAmount,
         vendorId,
-        purchaseById,
         purchaseT,
-        paidAmount,
-        orderId,
-        remainingAmount,
-        paymentMode,
         description,
-        purchaseTypeId,
-        purchaseStatus,
         performedById,
         performedT,
         transactionType,
-        purchaseConfirmedById,
         changeLog,
       } = args;
       const newPurchase = new Purchase({
         quantity,
+        item,
         purchaseRate,
         totalAmount,
         vendorId,
-        purchaseById,
         purchaseT,
-        paidAmount,
-        orderId,
-        remainingAmount,
-        paymentMode,
         description,
-        purchaseTypeId,
-        purchaseStatus,
         performedById,
         performedT,
         transactionType,
-        purchaseConfirmedById:
-          purchaseStatus.value === "approved" ? performedById : null,
         changeLog,
       });
       await newPurchase.save();
-      if (newPurchase) {
-        if (purchaseStatus.value !== "approved") {
-          const newNotification = new Notification({
-            type: "Purchase",
-            data: newPurchase._id,
-            unread: true,
-            time: newPurchase.performedT,
-          });
-          await newNotification.save();
-          if (newNotification) {
-            io.getIo().emit("refresh", {
-              action: "notification",
-              data: newNotification._id,
-            });
-          }
-        } else {
-          const getStock = await Stock.findById(purchaseTypeId);
-          if (getStock) {
-            getStock.quantity = getStock.quantity + quantity;
-            await getStock.save();
-          }
-        }
-      }
       return newPurchase;
     },
     updatePurchase: async (parent, args) => {
       const { id } = args;
-      const oldPurchase = await Purchase.findById(id);
-      if (oldPurchase.purchaseStatus.value === "approved") {
-        throw new Error(`Purchase with ID ${id} is already approved!`);
-      }
-      // args.purchaseConfirmedById = req.user.userRoleId;
       const updatedPurchase = await Purchase.findByIdAndUpdate(id, args);
       if (!updatedPurchase) {
         throw new Error(`Purchase with ID ${id} not found`);
-      }
-      if (updatedPurchase && args.purchaseStatus.value === "approved") {
-        const getStock = await Stock.findById(
-          updatedPurchase.purchaseTypeId._id
-        );
-        if (getStock) {
-          if (oldPurchase.quantity != updatedPurchase.quantity) {
-            getStock.quantity =
-              getStock.quantity -
-              (oldPurchase.quantity - updatedPurchase.quantity);
-          } else {
-            getStock.quantity = getStock.quantity + updatedPurchase.quantity;
-          }
-          await getStock.save();
-        }
-        io.getIo().emit("refresh", {
-          action: "notification",
-          data: null,
-        });
       }
       return updatedPurchase;
     },
     deletePurchase: async (parent, args) => {
       const { id } = args;
-      const oldPurchase = await Purchase.findById(id);
-      if (oldPurchase.purchaseStatus.value === "approved") {
-        throw new Error(`Purchase with ID ${id} is already approved!`);
-      }
       const deletedPurchase = await Purchase.findByIdAndDelete(id);
       if (!deletedPurchase) {
         throw new Error(`Purchase with ID ${id} not found`);
@@ -221,71 +135,33 @@ const resolvers = {
     addExpense: async (parent, args) => {
       const {
         amount,
-        expenseById,
         expenseT,
-        paidAmount,
-        orderId,
-        remainingAmount,
+        vendorId,
         paymentMode,
         description,
-        expenseStatus,
         performedById,
         performedT,
-        expenseConfirmedById,
         changeLog,
       } = args;
       const newExpense = new Expense({
         amount,
-        expenseById,
         expenseT,
-        paidAmount,
-        orderId,
-        remainingAmount,
+        vendorId,
         paymentMode,
         description,
-        expenseStatus,
         performedById,
         performedT,
-        expenseConfirmedById:
-          expenseStatus.value === "approved" ? performedById : null,
         changeLog,
       });
       await newExpense.save();
-      if (newExpense) {
-        if (expenseStatus.value !== "approved") {
-          const newNotification = new Notification({
-            type: "Expense",
-            data: newExpense._id,
-            unread: true,
-            time: newExpense.performedT,
-          });
-          await newNotification.save();
-          if (newNotification) {
-            io.getIo().emit("refresh", {
-              action: "notification",
-              data: newNotification._id,
-            });
-          }
-        }
-      }
       return newExpense;
     },
     updateExpense: async (parent, args) => {
       const { id } = args;
-      const oldExpense = await Expense.findById(id);
-      if (oldExpense.expenseStatus.value === "approved") {
-        throw new Error(`Expense with ID ${id} is already approved!`);
-      }
       // args.purchaseConfirmedById = req.user.userRoleId;
       const updatedExpense = await Expense.findByIdAndUpdate(id, args);
       if (!updatedExpense) {
         throw new Error(`Expense with ID ${id} not found`);
-      }
-      if (updatedExpense && args.expenseStatus.value === "approved") {
-        io.getIo().emit("refresh", {
-          action: "notification",
-          data: null,
-        });
       }
       return updatedExpense;
     },
@@ -341,10 +217,9 @@ const resolvers = {
     },
     addUtilization: async (parent, args) => {
       const {
-        stockId,
+        item,
         quantity,
         rate,
-        utilizationById,
         utilizationT,
         orderId,
         utilizationStatus,
@@ -354,10 +229,9 @@ const resolvers = {
         changeLog,
       } = args;
       const newUtilization = new Utilization({
-        stockId,
+        item,
         quantity,
         rate,
-        utilizationById,
         utilizationT,
         orderId,
         utilizationStatus,
@@ -367,29 +241,13 @@ const resolvers = {
         changeLog,
       });
       await newUtilization.save();
-      if (newUtilization) {
-        const getStock = await Stock.findById(stockId);
-        if (getStock) {
-          getStock.quantity = getStock.quantity - quantity;
-          await getStock.save();
-        }
-      }
       return newUtilization;
     },
     updateUtilization: async (parent, args) => {
       const { id } = args;
-      const oldUtilization = await Utilization.findById(id);
       const updatedUtilization = await Utilization.findByIdAndUpdate(id, args);
       if (!updatedUtilization) {
         throw new Error(`Utilization with ID ${id} not found`);
-      }
-      if (updatedUtilization && oldUtilization.quantity != args.quantity) {
-        const getStock = await Stock.findById(args.stockId);
-        if (getStock) {
-          getStock.quantity =
-            getStock.quantity + (oldUtilization.quantity - args.quantity);
-          await getStock.save();
-        }
       }
       return updatedUtilization;
     },
@@ -400,24 +258,14 @@ const resolvers = {
       if (!deletedUtilization) {
         throw new Error(`Utilization with ID ${id} not found`);
       }
-      if (deletedUtilization) {
-        const getStock = await Stock.findById(oldUtilization.stockId._id);
-        if (getStock) {
-          getStock.quantity =
-            getStock.quantity + +oldUtilization.quantity;
-          await getStock.save();
-        }
-      }
       return deletedUtilization;
     },
     addIncome: async (parent, args) => {
       const {
         amount,
-        customerId,
         orderId,
         transactionType,
         incomeT,
-        receivedById,
         performedById,
         performedT,
         description,
@@ -426,11 +274,9 @@ const resolvers = {
       } = args;
       const newIncome = new Income({
         amount,
-        customerId,
         orderId,
         transactionType,
         incomeT,
-        receivedById,
         performedById,
         performedT,
         description,
@@ -568,6 +414,7 @@ const resolvers = {
     addOrder: async (parent, args) => {
       const {
         name,
+        estimated,
         customer,
         orderT,
         performedById,
@@ -578,6 +425,7 @@ const resolvers = {
       } = args;
       const newOrder = new Order({
         name,
+        estimated,
         customer,
         orderT,
         performedById,

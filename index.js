@@ -13,7 +13,7 @@ process.on("uncaughtException", (err) => {
 
 
 mongoose.connect(
-  "mongodb+srv://alpesh:alpesh@cluster0.ly1e4zw.mongodb.net/engg_works?retryWrites=true&w=majority"
+  "mongodb+srv://alpesh:alpesh@cluster0.ly1e4zw.mongodb.net/ak_biz?retryWrites=true&w=majority"
 );
 
 mongoose.connection.once("open", () => {

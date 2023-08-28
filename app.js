@@ -22,7 +22,7 @@ const app = express();
 const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(function (req, res, next) {
-  const allowedOrigins = ['http://localhost:3000', 'https://company-manager-64bf8.web.app'];
+  const allowedOrigins = ['http://localhost:3000', 'https://ak-manager.web.app'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
        res.setHeader('Access-Control-Allow-Origin', origin);
@@ -35,7 +35,7 @@ app.use(function (req, res, next) {
 });
 
 const store = new mongoDbStore({
-  uri: "mongodb+srv://alpesh:alpesh@cluster0.ly1e4zw.mongodb.net/engg_works",
+  uri: "mongodb+srv://alpesh:alpesh@cluster0.ly1e4zw.mongodb.net/ak_biz",
   collection: "sessions",
 });
 app.set('trust proxy', 1);

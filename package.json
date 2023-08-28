@@ -1,7 +1,7 @@
 {
-  "name": "engg_works",
+  "name": "ak_biz",
   "version": "1.0.0",
-  "description": "engg_works_backend",
+  "description": "ak_biz_backend",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
