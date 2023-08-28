@@ -22,7 +22,7 @@ const app = express();
 const httpServer = http.createServer(app);
 app.use(express.json());
 app.use(function (req, res, next) {
-  const allowedOrigins = ['http://localhost:3000', 'https://ak-manager.web.app'];
+  const allowedOrigins = ['http://localhost:3000', 'https://ak-manager-new.web.app'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
        res.setHeader('Access-Control-Allow-Origin', origin);
