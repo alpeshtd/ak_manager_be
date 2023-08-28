@@ -2,7 +2,7 @@ import axios from 'axios';
 import allDefaultData from 'defaults/defaultIndex';
 import { store } from 'store';
 
-const APIURL = 'https://akmanager.onrender.com'
+const APIURL = 'https://akmanager.onrender.com/'
 // const APIURL = 'http://localhost:4000/'
 
 const api = ({ method = 'POST', url = '', setheaders = {}, reqPayload = {} } = {}) => {

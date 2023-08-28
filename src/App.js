@@ -75,11 +75,11 @@ const App = () => {
       }
     });
     // dispatch({
-    //   type: ADD_EMPLOYEE_DATA.getDispatchType,
-    //   payload: {
-    //     query: ADD_EMPLOYEE_DATA.getQuery,
-    //     variables: {}
-    //   }
+      //   type: ADD_EMPLOYEE_DATA.getDispatchType,
+      //   payload: {
+        //     query: ADD_EMPLOYEE_DATA.getQuery,
+        //     variables: {}
+      //   }
     // });
     dispatch({
       type: ADD_VENDOR_DATA.getDispatchType,
@@ -96,11 +96,11 @@ const App = () => {
       }
     });
     // dispatch({
-    //   type: ADD_STOCK_DATA.getDispatchType,
-    //   payload: {
-    //     query: ADD_STOCK_DATA.getQuery,
-    //     variables: {}
-    //   }
+      //   type: ADD_STOCK_DATA.getDispatchType,
+      //   payload: {
+        //     query: ADD_STOCK_DATA.getQuery,
+        //     variables: {}
+      //   }
     // });
     dispatch({
       type: ADD_ORDER_DATA.getDispatchType,
