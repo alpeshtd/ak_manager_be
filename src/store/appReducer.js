@@ -21,10 +21,10 @@ const appReducer = (state = initialState, action) => {
         ...state,
         loggedUserRole: action.payload
       }
-    case actionTypes.UTILIZATIONS_STATS_FETCH_SUCCEEDED:
+    case actionTypes.ORDER_PROFIT_FETCH_SUCCEEDED:
       return {
         ...state,
-        utilizationsStats: action.utilizationsStats
+        orderProfitStats: action.orderProfitStats
       }
     case actionTypes.ORDERS_STATS_FETCH_SUCCEEDED:
       return {

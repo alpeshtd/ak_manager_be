@@ -22,14 +22,14 @@ const elements = {
   title: 'Elements',
   type: 'group',
   children: [
-    {
-      id: 'stock',
-      title: 'Stock',
-      type: 'item',
-      icon: icons.IconBuildingWarehouse,
-      url: '/elements/stock',
-      breadcrumbs: false
-    },
+    // {
+    //   id: 'stock',
+    //   title: 'Stock',
+    //   type: 'item',
+    //   icon: icons.IconBuildingWarehouse,
+    //   url: '/elements/stock',
+    //   breadcrumbs: false
+    // },
     {
       id: 'customers',
       title: 'Customers',
@@ -46,14 +46,14 @@ const elements = {
       url: '/elements/vendors',
       breadcrumbs: false
     },
-    {
-      id: 'employees',
-      title: 'Employees',
-      type: 'item',
-      url: '/elements/employees',
-      icon: icons.IconUserCircle,
-      breadcrumbs: false
-    },
+    // {
+    //   id: 'employees',
+    //   title: 'Employees',
+    //   type: 'item',
+    //   url: '/elements/employees',
+    //   icon: icons.IconUserCircle,
+    //   breadcrumbs: false
+    // },
     {
       id: 'users',
       title: 'Users',

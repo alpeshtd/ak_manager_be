@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
-import openSocket from 'socket.io-client';
+// import openSocket from 'socket.io-client';
 
 // routing
 import Routes from 'routes';
@@ -14,10 +14,10 @@ import NavigationScroll from 'layout/NavigationScroll';
 import { useEffect } from 'react';
 import ADD_USER_ROLE_DATA from 'defaults/addUserRole';
 import ADD_USER_DATA from 'defaults/addUser';
-import ADD_EMPLOYEE_DATA from 'defaults/addEmployees';
+// import ADD_EMPLOYEE_DATA from 'defaults/addEmployees';
 import ADD_VENDOR_DATA from 'defaults/addVendor';
 import ADD_CUSTOMER_DATA from 'defaults/addCustomers';
-import ADD_STOCK_DATA from 'defaults/addStock';
+// import ADD_STOCK_DATA from 'defaults/addStock';
 import ADD_ORDER_DATA from 'defaults/addOrderFields';
 import ADD_UTILIZATION_DATA from 'defaults/addUtilization';
 import ADD_PURCHASE_DATA from 'defaults/addPurchases';
@@ -50,16 +50,16 @@ const App = () => {
       return;
     }
 
-    const socket = openSocket('https://comanager.onrender.com');
+    // const socket = openSocket('https://comanager.onrender.com');
     // const socket = openSocket('http://localhost:4000');
-    socket.on('refresh', (data) => {
-      if (data.action === 'notification') {
-        dispatch({
-          type: 'NOTIFICATIONS_FETCH_REQUESTED',
-          payload: {}
-        });
-      }
-    });
+    // socket.on('refresh', (data) => {
+    //   if (data.action === 'notification') {
+    //     dispatch({
+    //       type: 'NOTIFICATIONS_FETCH_REQUESTED',
+    //       payload: {}
+    //     });
+    //   }
+    // });
     dispatch({
       type: ADD_USER_ROLE_DATA.getDispatchType,
       payload: {
@@ -74,13 +74,13 @@ const App = () => {
         variables: {}
       }
     });
-    dispatch({
-      type: ADD_EMPLOYEE_DATA.getDispatchType,
-      payload: {
-        query: ADD_EMPLOYEE_DATA.getQuery,
-        variables: {}
-      }
-    });
+    // dispatch({
+    //   type: ADD_EMPLOYEE_DATA.getDispatchType,
+    //   payload: {
+    //     query: ADD_EMPLOYEE_DATA.getQuery,
+    //     variables: {}
+    //   }
+    // });
     dispatch({
       type: ADD_VENDOR_DATA.getDispatchType,
       payload: {
@@ -95,13 +95,13 @@ const App = () => {
         variables: {}
       }
     });
-    dispatch({
-      type: ADD_STOCK_DATA.getDispatchType,
-      payload: {
-        query: ADD_STOCK_DATA.getQuery,
-        variables: {}
-      }
-    });
+    // dispatch({
+    //   type: ADD_STOCK_DATA.getDispatchType,
+    //   payload: {
+    //     query: ADD_STOCK_DATA.getQuery,
+    //     variables: {}
+    //   }
+    // });
     dispatch({
       type: ADD_ORDER_DATA.getDispatchType,
       payload: {

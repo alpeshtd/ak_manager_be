@@ -170,7 +170,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                             color: theme.palette.primary[200]
                           }}
                         >
-                          Total Order
+                          Total Orders
                         </Typography>
                       </Grid>
                     </Grid>

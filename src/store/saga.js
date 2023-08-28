@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { getUserRoles, getVendors, getUsers, getCustomers, getStocks, getUtilizations, getPurchase, getIncome, getOrders, getEmployees, getNotifications, performLogin, getLoggedUser, getExpenses, getUtilizationsStats, commonApiRequest } from 'api/api';
+import { getUserRoles, getVendors, getUsers, getCustomers, getStocks, getUtilizations, getPurchase, getIncome, getOrders, getEmployees, getNotifications, performLogin, getLoggedUser, getExpenses, getOrderProfitStats, commonApiRequest } from 'api/api';
 
 function* doLogin(action) {
   try {
@@ -127,12 +127,12 @@ function* fetchNotifications(action) {
   }
 }
 
-function* fetchUtilizationsStats(action) {
+function* fetchOrderProfit(action) {
   try {
-    const utiStats = yield call(getUtilizationsStats, action.payload);
-    yield put({ type: 'UTILIZATIONS_STATS_FETCH_SUCCEEDED', utilizationsStats: utiStats.utilizationStats });
+    const profitStats = yield call(getOrderProfitStats, action.payload);
+    yield put({ type: 'ORDER_PROFIT_FETCH_SUCCEEDED', orderProfitStats: profitStats.orderProfitStats });
   } catch (e) {
-    yield put({ type: 'UTILIZATIONS_STATS_FETCH_FAILED', message: e.message });
+    yield put({ type: 'ORDER_PROFIT_FETCH_FAILED', message: e.message });
   }
 }
 
@@ -169,7 +169,7 @@ function* mySaga() {
   yield takeLatest('NOTIFICATIONS_FETCH_REQUESTED', fetchNotifications);
   yield takeLatest('USER_FETCH_REQUESTED', fetchLoggedUser);
   yield takeLatest('USER_LOGIN_INIT', doLogin);
-  yield takeLatest('UTILIZATIONS_STATS_FETCH_REQUESTED', fetchUtilizationsStats);
+  yield takeLatest('ORDER_PROFIT_FETCH_REQUESTED', fetchOrderProfit);
   yield takeLatest('ORDERS_STATS_FETCH_REQUESTED', fetchOrdersStats);
   yield takeLatest('INCOME_EXPENSE_STATS_FETCH_REQUESTED', fetchIncomeExpenseStats);
 }

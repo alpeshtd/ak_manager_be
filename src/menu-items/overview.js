@@ -37,19 +37,19 @@ const overview = {
       breadcrumbs: false
     },
     {
-      id: 'purchases',
-      title: 'Purchases',
-      type: 'item',
-      icon: icons.IconShoppingCartPlus,
-      url: '/overview/purchases',
-      breadcrumbs: false
-    },
-    {
       id: 'income',
       title: 'Income',
       type: 'item',
       icon: icons.IconCurrencyRupee,
       url: '/overview/incomes',
+      breadcrumbs: false
+    },
+    {
+      id: 'purchases',
+      title: 'Purchases',
+      type: 'item',
+      icon: icons.IconShoppingCartPlus,
+      url: '/overview/purchases',
       breadcrumbs: false
     },
     {

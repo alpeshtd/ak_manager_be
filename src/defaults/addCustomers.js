@@ -59,14 +59,14 @@ const ADD_CUSTOMER_DATA = {
       type: 'text',
       placeHolder: 'Mail',
       label: 'Mail*',
-      required: true,
+      required: false,
       value: ''
     },
     address: {
       type: 'text',
       placeHolder: 'Address',
       label: 'Address*',
-      required: true,
+      required: false,
       value: ''
     }
   },

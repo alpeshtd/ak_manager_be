@@ -79,7 +79,7 @@ const TotalIncomeLightCard = ({ isLoading, incomeExpense }) => {
                         mt: 0.5
                       }}
                     >
-                      Total Expense
+                      Order Expense
                     </Typography>
                   }
                 />

@@ -1,4 +1,9 @@
-import { getVendor } from "api/api";
+import { commonApiRequest, getVendor } from "api/api";
+import React from "react";
+
+import { Grid } from '@mui/material';
+import { gridSpacing } from 'store/constant';
+import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -58,15 +63,15 @@ const ADD_VENDOR_DATA = {
     mail: {
       type: 'text',
       placeHolder: 'Mail',
-      label: 'Mail*',
-      required: true,
+      label: 'Mail',
+      required: false,
       value: ''
     },
     address: {
       type: 'text',
       placeHolder: 'Address',
-      label: 'Address*',
-      required: true,
+      label: 'Address',
+      required: false,
       value: ''
     }
   },
@@ -103,6 +108,76 @@ const ADD_VENDOR_DATA = {
       name
     }
   }`,
+  detailsTableQuery: `query VendorTransactions($id: ID) {
+    vendorTransactions(id: $id) {
+      name
+      vendorPurchases {
+        id
+        item
+        quantity
+        purchaseRate
+        totalAmount
+        purchaseT
+      }
+      vendorExpenses {
+        id
+        amount
+        expenseT
+        description
+      }
+    }
+  }`,
+  detailsTableReq: (payload) => commonApiRequest(payload),
+  formatDetailsTableData: ({ vendorTransactions }) => {
+    const total = {
+      purchase: 0,
+      expense: 0
+    };
+    const tempPurchase = vendorTransactions[0].vendorPurchases.map((purchase) => {
+      total.purchase += +purchase.totalAmount;
+      return {
+        type: 'purchase',
+        details: purchase.item,
+        // description:income.description,
+        purchaseAmount: purchase.totalAmount,
+        expenseAmount: null,
+        time: purchase.purchaseT
+      };
+    });
+    const tempExp = vendorTransactions[0].vendorExpenses.map((exp) => {
+      total.expense += exp.amount;
+      return {
+        type: 'expense',
+        details: exp.description,
+        // description: uti.description,
+        purchaseAmount: null,
+        expenseAmount: exp.amount,
+        time: exp.expenseT
+      };
+    });
+    const concatArray = [...tempPurchase, ...tempExp].sort((a, b) => {
+      return b.time - a.time;
+    });
+    const render = (
+      <Grid container spacing={gridSpacing}>
+        <Grid item lg={3} md={3} sm={4} xs={6}>
+          <div style={{ fontWeight: 700 }}>Total Purchase</div>
+          <div>{total.purchase}</div>
+        </Grid>
+        <Grid item lg={3} md={3} sm={4} xs={6}>
+          <div style={{ fontWeight: 700 }}>Total Paid</div>
+          <div>{total.expense}</div>
+        </Grid>
+        <Grid item lg={3} md={3} sm={4} xs={6}>
+          <div style={{ fontWeight: 700 }}>Remaining Amount</div>
+          <div>{total.purchase - total.expense}</div>
+        </Grid>
+      </Grid>
+    );
+    const columns = ['Date', 'Details', 'Purchase', 'Paid'];
+    const rows = concatArray.map((ca) => [formatTimestampToDate(ca.time), ca.details, ca.purchaseAmount, ca.expenseAmount]);
+    return { rows, columns, render };
+  }
 };
 
 export default ADD_VENDOR_DATA;

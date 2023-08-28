@@ -87,14 +87,14 @@ const chartData = {
 export default chartData;
 
 export const createChartData = (data) => {
-  const { stocks } = data;
-  const xCategory = stocks.map((stock) => stock.name);
-  const seriesKeys = [{name: 'Approved', key:'totalApproved'},{name: 'Rejected', key:'totalRejected'},{name:'InProgress', key:'totalInProgress'}]
+  const { ordersData } = data;
+  const xCategory = ordersData.map((stock) => stock.name);
+  const seriesKeys = [{name: 'Total Utilization', key:'totalUtilization'},{name: 'Total Income', key:'totalIncome'}]
   const seriesData = seriesKeys.map(({name, key})=> {
     const tempData = { name, data: [] };
-    stocks.forEach((stock) => {
+    ordersData.forEach((orderD) => {
       // tempData.data.push(((stock[key]/stock.totalUtilizations) * 100).toFixed(2));
-      tempData.data.push(stock[key]);
+      tempData.data.push(orderD[key]);
     });
     return tempData
   })

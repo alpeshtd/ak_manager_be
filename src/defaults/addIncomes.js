@@ -22,20 +22,12 @@ function createData(arr) {
 const getDataString = `{
   id
   amount
-  customerId {
-    id
-    name
-  }
   transactionType
   orderId {
     id
     name
   }
   incomeT
-  receivedById {
-    id
-    name
-  }
   performedById {
     id
     firstName
@@ -65,21 +57,11 @@ const ADD_INCOME_DATA = {
       required: true,
       value: ''
     },
-    customerId: {
-      type: 'select',
-      placeHolder: 'Select Customer',
-      label: 'Select Customer*',
-      value: null,
-      options: [],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.customers;
-        return loadedOptions.map((opt) => {
-          return { label: opt.name, id: opt.id, value: opt.id };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.name, id: val.id, value: val.id };
-      }
+    incomeT: {
+      type: 'date',
+      placeHolder: 'DD/MM/YYYY',
+      label: 'Date',
+      value: '' + new Date().getTime(),
     },
     orderId: {
       type: 'select',
@@ -89,22 +71,6 @@ const ADD_INCOME_DATA = {
       options: [],
       setOptions: (store) => {
         const loadedOptions = store.overview.orders;
-        return loadedOptions.map((opt) => {
-          return { label: opt.name, id: opt.id, value: opt.id };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.name, id: val.id, value: val.id };
-      }
-    },
-    receivedById: {
-      type: 'select',
-      placeHolder: 'Recieved By',
-      label: 'Recieved By*',
-      value: null,
-      options: [],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.employees;
         return loadedOptions.map((opt) => {
           return { label: opt.name, id: opt.id, value: opt.id };
         });
@@ -134,14 +100,12 @@ const ADD_INCOME_DATA = {
     },
   },
   tableHeading: createData([
-    ['customerId', 'Customer', ['customerId', 'name'],null,'left',null,{ paddingLeft: '24px' }],
+    ['incomeT', 'Date', 'incomeT','table','left',formatTimestampToDate, { paddingLeft: '24px' }],
+    ['orderId', 'Order', ['orderId', 'name']],
     ['amount', 'Amount', 'amount'],
-    ['receivedById', 'Recieved By', ['receivedById', 'name']],
     ['paymentMode', 'Payment Mode', ['paymentMode', 'label']],
-    ['actions', 'Actions', 'actions', 'details', 'center'],
     ['description', 'Description', 'description','table'],
-    ['incomeT', 'Date', 'incomeT','table','left',formatTimestampToDate],
-    ['orderId', 'Order', ['orderId', 'name'],'table'],
+    ['actions', 'Actions', 'actions', 'details', 'center'],
   ]),
   getDispatchType: 'INCOMES_FETCH_REQUESTED',
   getQuery: `query Incomes {
@@ -151,13 +115,13 @@ const ADD_INCOME_DATA = {
   getSingleQuery: `query Income($id: ID!){
     income(id: $id) ${getDataString}
   }`,
-  addNewQuery: `mutation AddIncome($amount: Float!, $transactionType: String, $receivedById: String!, $customerId: String, $orderId: String, $incomeT: String, $performedById: String, $performedT: String, $description: String, $paymentMode: AccessInput, $changeLog: [String]) {
-    addIncome(amount: $amount, transactionType: $transactionType, receivedById: $receivedById, customerId: $customerId, orderId: $orderId, incomeT: $incomeT, performedById: $performedById, performedT: $performedT, description: $description, paymentMode: $paymentMode, changeLog: $changeLog) {
+  addNewQuery: `mutation AddIncome($amount: Float!, $transactionType: String, $orderId: String, $incomeT: String, $performedById: String, $performedT: String, $description: String, $paymentMode: AccessInput, $changeLog: [String]) {
+    addIncome(amount: $amount, transactionType: $transactionType, orderId: $orderId, incomeT: $incomeT, performedById: $performedById, performedT: $performedT, description: $description, paymentMode: $paymentMode, changeLog: $changeLog) {
       id
     }
   }`,
-  updateQuery: `mutation UpdateIncome($id: ID!, $amount: Float, $customerId: String, $transactionType: String, $orderId: String, $incomeT: String, $receivedById: String, $performedById: String, $performedT: String, $description: String, $paymentMode: AccessInput, $changeLog: [String]) {
-    updateIncome(id: $id, amount: $amount, customerId: $customerId, transactionType: $transactionType, orderId: $orderId, incomeT: $incomeT, receivedById: $receivedById, performedById: $performedById, performedT: $performedT, description: $description, paymentMode: $paymentMode, changeLog: $changeLog) {
+  updateQuery: `mutation UpdateIncome($id: ID!, $amount: Float, $transactionType: String, $orderId: String, $incomeT: String, $performedById: String, $performedT: String, $description: String, $paymentMode: AccessInput, $changeLog: [String]) {
+    updateIncome(id: $id, amount: $amount, transactionType: $transactionType, orderId: $orderId, incomeT: $incomeT, performedById: $performedById, performedT: $performedT, description: $description, paymentMode: $paymentMode, changeLog: $changeLog) {
       id
     }
   }`,
@@ -167,9 +131,7 @@ const ADD_INCOME_DATA = {
     }
   }`,
   extractValues: {
-    customerId: ['id'],
     orderId: ['id'],
-    receivedById: ['id'],
   }
 };
 

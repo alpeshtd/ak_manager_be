@@ -1,5 +1,5 @@
 import { getPurchaseSingle } from "api/api";
-import { formatTimestampToDate, getStatusComp } from "utils/utils";
+import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -21,6 +21,7 @@ function createData(arr) {
 
 const getDataString = `{
   id
+  item
   quantity
   purchaseRate
   totalAmount
@@ -28,42 +29,14 @@ const getDataString = `{
     id
     name
   }
-  purchaseById {
-    id
-    name
-  }
   purchaseT
-  paidAmount
-  orderId {
-    id
-    name
-  }
-  remainingAmount
-  paymentMode {
-    id
-    label
-    value
-  }
   description
-  purchaseTypeId {
-    id
-    type
-  }
-  purchaseStatus {
-    id
-    label
-    value
-  }
   performedById {
     id
     firstName
   }
   performedT
   transactionType
-  purchaseConfirmedById {
-    id
-    firstName
-  }
   changeLog
 }`;
 
@@ -81,22 +54,12 @@ const ADD_PURCHASE_DATA = {
       label: 'Date',
       value: '' + new Date().getTime(),
     },
-    purchaseTypeId: {
-      type: 'select',
-      placeHolder: 'Stock',
-      label: 'Stock*',
-      value: null,
-      options: [],
-      dependant: ['quantity', 'purchaseRate'],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.stocks;
-        return loadedOptions.map((opt) => {
-          return { label: opt.type, id: opt.id, value: opt.id, ...opt };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.type, id: val.id, value: val.id, ...val };
-      }
+    item: {
+      type: 'text',
+      placeHolder: 'Item',
+      label: 'Item*',
+      required: true,
+      value: '',
     },
     quantity: {
       type: 'number',
@@ -104,22 +67,7 @@ const ADD_PURCHASE_DATA = {
       label: 'Quantity*',
       required: true,
       value: '',
-      endAdornment: '-',
-      helperText: "",
-      dependant: ['totalAmount'],
-      dependancyFunc: (allFields, curKey, triggererKey) => {
-        const funSet = {
-          purchaseTypeId: () => {
-            return {
-              ...allFields[curKey],
-              endAdornment: allFields[triggererKey]?.value?.unit || '',
-              helperText: 'Available quantity - ' + allFields[triggererKey]?.value?.quantity || '',
-              // error: +allFields[curKey].value > (allFields[triggererKey]?.value?.quantity || 0)
-            }
-          }
-        }
-        return funSet[triggererKey]();
-      }
+      dependant: ['totalAmount']
     },
     purchaseRate: {
       type: 'number',
@@ -127,19 +75,7 @@ const ADD_PURCHASE_DATA = {
       label: 'Rate*',
       required: true,
       value: '',
-      helperText: "",
-      dependant: ['totalAmount'],
-      dependancyFunc: (allFields, curKey, triggererKey) => {
-        const funSet = {
-          purchaseTypeId: () =>{
-            return {
-              ...allFields[curKey],
-              value: allFields[triggererKey].value ? +allFields[triggererKey].value.rate : null,
-            }
-          }
-        }
-        return funSet[triggererKey]();
-      }
+      dependant: ['totalAmount']
     },
     vendorId: {
       type: 'select',
@@ -157,38 +93,6 @@ const ADD_PURCHASE_DATA = {
         return { label: val.name, id: val.id, value: val.id };
       }
     },
-    orderId: {
-      type: 'select',
-      placeHolder: 'Order',
-      label: 'Order*',
-      value: null,
-      options: [],
-      setOptions: (store) => {
-        const loadedOptions = store.overview.orders;
-        return loadedOptions.map((opt) => {
-          return { label: opt.name, id: opt.id, value: opt.id };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.name, id: val.id, value: val.id };
-      }
-    },
-    purchaseById: {
-      type: 'select',
-      placeHolder: 'Purchase By',
-      label: 'Purchase By*',
-      value: null,
-      options: [],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.employees;
-        return loadedOptions.map((opt) => {
-          return { label: opt.name, id: opt.id, value: opt.id };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.name, id: val.id, value: val.id };
-      }
-    },
     totalAmount: {
       type: 'number',
       disabled: true,
@@ -196,7 +100,6 @@ const ADD_PURCHASE_DATA = {
       label: 'Total Amount*',
       required: true,
       value: '',
-      dependant: ['remainingAmount'],
       dependancyFunc: (allFields, curKey, triggererKey) => {
         const funSet = {
           quantity: () => {
@@ -215,62 +118,6 @@ const ADD_PURCHASE_DATA = {
         return funSet[triggererKey]();
       }
     },
-    paidAmount: {
-      type: 'number',
-      placeHolder: 'Paid Amount',
-      label: 'Paid Amount*',
-      required: true,
-      value: '',
-      dependant: ['remainingAmount']
-    },
-    remainingAmount: {
-      type: 'number',
-      placeHolder: 'Remaining Amount',
-      label: 'Remaining Amount*',
-      required: true,
-      value: '',
-      dependancyFunc: (allFields, curKey, triggererKey) => {
-        const funSet = {
-          totalAmount: () => {
-            return {
-              ...allFields[curKey],
-              value: allFields.totalAmount.value - allFields.paidAmount.value
-            }
-          },
-          paidAmount: () => {
-            return {
-              ...allFields[curKey],
-              value: allFields.totalAmount.value - allFields.paidAmount.value
-            }
-          }
-        }
-        return funSet[triggererKey]();
-      }
-    },
-    paymentMode: {
-      type: 'select',
-      placeHolder: 'Payment Mode*',
-      label: 'Payment Mode*',
-      value: null,
-      options: [
-        { label: 'Cash', id: 'cash', value: 'cash' },
-        { label: 'Online', id: 'online', value: 'online' },
-        { label: 'Gpay', id: 'gpay', value: 'gpay' },
-        { label: 'Phonepay', id: 'phonepay', value: 'phonepay' }
-      ]
-    },
-    purchaseStatus: {
-      type: 'select',
-      placeHolder: 'Status*',
-      label: 'Status*',
-      value: null,
-      options: [
-        { id: 'requested', label: 'Requested', value: 'requested' },
-        { id: 'pending', label: 'Pending', value: 'pending' },
-        { id: 'approved', label: 'Approved', value: 'approved' },
-        { id: 'rejected', label: 'Rejected', value: 'rejected' }
-      ]
-    },
     description: {
       type: 'textArea',
       placeHolder: 'Some details',
@@ -280,18 +127,13 @@ const ADD_PURCHASE_DATA = {
     }
   },
   tableHeading: createData([
-    ['purchaseTypeId', 'Stock', ['purchaseTypeId','type'],null,'left',null, { paddingLeft: '24px' }],
-    ['vendorId', 'Vendor', ['vendorId', 'name'], 'table'],
-    ['purchaseStatus', 'Status', ['purchaseStatus','label'], null,'left', getStatusComp],
+    ['vendorId', 'Vendor', ['vendorId', 'name']],
+    ['item', 'Item', 'item'],
     ['quantity', 'Quantity', 'quantity'],
     ['purchaseRate', 'Rate', 'purchaseRate'],
     ['totalAmount', 'Total', 'totalAmount'],
-    ['remainingAmount', 'Remaining Amount', 'remainingAmount', 'table'],
-    ['paymentMode', 'Payment Mode', ['paymentMode','label'], 'table'],
     ['purchaseT', 'Date', 'purchaseT','table','left',formatTimestampToDate],
     ['actions', 'Actions', 'actions', 'details', 'center'],
-    ['purchaseById', 'Purchase By', ['purchaseById','name'], 'table'],
-    ['purchaseConfirmedById', 'Confirmed By', ['purchaseConfirmedById','firstName'], 'table'],
     ['description', 'Description', 'description','table']
   ]),
   getDispatchType: 'PURCHASES_FETCH_REQUESTED',
@@ -302,13 +144,13 @@ const ADD_PURCHASE_DATA = {
   getSingleQuery: `query Purchase($id: ID!){
     purchase(id: $id) ${getDataString}
   }`,
-  addNewQuery: `mutation AddPurchase($quantity: Float!, $purchaseRate: Float!, $totalAmount: Float!, $vendorId: String, $purchaseById: String, $purchaseT: String, $paidAmount: Float, $orderId: String, $remainingAmount: Float, $paymentMode: AccessInput, $description: String, $purchaseTypeId: String, $purchaseStatus: AccessInput, $performedById: String, $performedT: String, $transactionType: String, $purchaseConfirmedById: String, $changeLog: [String]) {
-    addPurchase(quantity: $quantity, purchaseRate: $purchaseRate, totalAmount: $totalAmount, vendorId: $vendorId, purchaseById: $purchaseById, purchaseT: $purchaseT, paidAmount: $paidAmount, orderId: $orderId, remainingAmount: $remainingAmount, paymentMode: $paymentMode, description: $description, purchaseTypeId: $purchaseTypeId, purchaseStatus: $purchaseStatus, performedById: $performedById, performedT: $performedT, transactionType: $transactionType, purchaseConfirmedById: $purchaseConfirmedById, changeLog: $changeLog) {
+  addNewQuery: `mutation AddPurchase($quantity: Float!, $item: String, $purchaseRate: Float!, $totalAmount: Float!, $vendorId: String, $purchaseT: String, $description: String, $performedById: String, $performedT: String, $transactionType: String, $changeLog: [String]) {
+    addPurchase(quantity: $quantity, item: $item, purchaseRate: $purchaseRate, totalAmount: $totalAmount, vendorId: $vendorId, purchaseT: $purchaseT, description: $description, performedById: $performedById, performedT: $performedT, transactionType: $transactionType, changeLog: $changeLog) {
       id
     }
   }`,
-  updateQuery: `mutation UpdatePurchase($id: ID!, $quantity: Float, $purchaseRate: Float, $totalAmount: Float, $vendorId: String, $purchaseById: String, $purchaseT: String, $paidAmount: Float, $orderId: String, $remainingAmount: Float, $paymentMode: AccessInput, $description: String, $purchaseTypeId: String, $purchaseStatus: AccessInput, $performedById: String, $performedT: String, $transactionType: String, $purchaseConfirmedById: String, $changeLog: [String]) {
-    updatePurchase(id: $id, quantity: $quantity, purchaseRate: $purchaseRate, totalAmount: $totalAmount, vendorId: $vendorId, purchaseById: $purchaseById, purchaseT: $purchaseT, paidAmount: $paidAmount, orderId: $orderId, remainingAmount: $remainingAmount, paymentMode: $paymentMode, description: $description, purchaseTypeId: $purchaseTypeId, purchaseStatus: $purchaseStatus, performedById: $performedById, performedT: $performedT, transactionType: $transactionType, purchaseConfirmedById: $purchaseConfirmedById, changeLog: $changeLog) {
+  updateQuery: `mutation UpdatePurchase($id: ID!, $item: String, $quantity: Float, $purchaseRate: Float, $totalAmount: Float, $vendorId: String, $purchaseT: String, $description: String, $performedById: String, $performedT: String, $transactionType: String, $changeLog: [String]) {
+    updatePurchase(id: $id, item: $item, quantity: $quantity, purchaseRate: $purchaseRate, totalAmount: $totalAmount, vendorId: $vendorId, purchaseT: $purchaseT, description: $description, performedById: $performedById, performedT: $performedT, transactionType: $transactionType, changeLog: $changeLog) {
       id
     }
   }`,
@@ -319,9 +161,6 @@ const ADD_PURCHASE_DATA = {
   }`,
   extractValues: {
     vendorId: ['id'],
-    purchaseById: ['id'],
-    orderId: ['id'],
-    purchaseTypeId: ['id'],
   },
   updateStatus: (action, data, userId) => {
     const updatedData = {};

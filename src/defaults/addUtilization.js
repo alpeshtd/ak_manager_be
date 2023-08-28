@@ -1,5 +1,5 @@
 import { getUtilization } from "api/api";
-import { formatTimestampToDate, getStatusComp } from "utils/utils";
+import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -21,28 +21,13 @@ function createData(arr) {
 
 const getDataString = `{
   id
-  stockId {
-    id
-    type
-    unit
-    quantity
-    rate
-  }
+  item
   quantity
   rate
-  utilizationById {
-    id
-    name
-  }
   utilizationT
   orderId {
     id
     name
-  }
-  utilizationStatus {
-    id
-    label
-    value
   }
   performedById {
     id
@@ -60,22 +45,12 @@ const ADD_UTILIZATION_DATA = {
   storePath: ['overview', 'utilizations'],
   label: 'Utilization',
   fields: {
-    stockId: {
-      type: 'select',
-      placeHolder: 'Select Stock',
-      label: 'Select Stock*',
-      value: null,
-      options: [],
-      dependant: ['quantity', 'rate'],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.stocks;
-        return loadedOptions.map((opt) => {
-          return { label: opt.type, id: opt.id, value: opt.id, ...opt };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.type, id: val.id, value: val.id, ...val };
-      }
+    item: {
+      type: 'text',
+      placeHolder: 'Item',
+      label: 'Item*',
+      required: true,
+      value: '',
     },
     quantity: {
       type: 'number',
@@ -83,21 +58,8 @@ const ADD_UTILIZATION_DATA = {
       label: 'Quantity*',
       required: true,
       value: '',
-      endAdornment: '-',
-      helperText: "",
-      dependancyFunc: (allFields, curKey, triggererKey) => {
-        const funSet = {
-          stockId: () => {
-            return {
-              ...allFields[curKey],
-              endAdornment: allFields[triggererKey]?.value?.unit || '',
-              helperText: 'Available quantity - ' + allFields[triggererKey]?.value?.quantity || '',
-              // error: +allFields[curKey].value > (allFields[triggererKey]?.value?.quantity || 0)
-            }
-          }
-        }
-        return funSet[triggererKey]();
-      }
+      // endAdornment: '-',
+      // helperText: "",
     },
     rate: {
       type: 'number',
@@ -105,34 +67,23 @@ const ADD_UTILIZATION_DATA = {
       label: 'Rate*',
       required: true,
       value: '',
-      dependancyFunc: (allFields, curKey, triggererKey) => {
-        const funSet = {
-          stockId: () =>{
-            return {
-              ...allFields[curKey],
-              value: allFields[triggererKey].value ? +allFields[triggererKey].value.rate : null,
-            }
-          }
-        }
-        return funSet[triggererKey]();
-      }
     },
-    utilizationById: {
-      type: 'select',
-      placeHolder: 'Utilization By',
-      label: 'Utilization By*',
-      value: null,
-      options: [],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.employees;
-        return loadedOptions.map((opt) => {
-          return { label: opt.name, id: opt.id, value: opt.id };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.name, id: val.id, value: val.id };
-      }
-    },
+    // utilizationById: {
+    //   type: 'select',
+    //   placeHolder: 'Utilization By',
+    //   label: 'Utilization By*',
+    //   value: null,
+    //   options: [],
+    //   setOptions: (store) => {
+    //     const loadedOptions = store.elements.employees;
+    //     return loadedOptions.map((opt) => {
+    //       return { label: opt.name, id: opt.id, value: opt.id };
+    //     });
+    //   },
+    //   setValue: (val) => {
+    //     return { label: val.name, id: val.id, value: val.id };
+    //   }
+    // },
     orderId: {
       type: 'select',
       placeHolder: 'Order',
@@ -155,17 +106,6 @@ const ADD_UTILIZATION_DATA = {
       label: 'Date',
       value: '' + new Date().getTime(),
     },
-    utilizationStatus: {
-      type: 'select',
-      placeHolder: 'Status*',
-      label: 'Status*',
-      value: null,
-      options: [
-        { id: 'inProgress', label: 'In progress', value: 'inProgress' },
-        { id: 'approved', label: 'Approved', value: 'approved' },
-        { id: 'rejected', label: 'Rejected', value: 'rejected' }
-      ]
-    },
     description: {
       type: 'textArea',
       placeHolder: 'Some details',
@@ -175,13 +115,11 @@ const ADD_UTILIZATION_DATA = {
     }
   },
   tableHeading: createData([
-    ['stockId', 'Stock', ['stockId','type'],null,'left',null,{ paddingLeft: '24px' }],
-    ['utilizationStatus','Status',['utilizationStatus','label'],null,'left',getStatusComp],
+    ['item', 'Item', 'item',null,'left',null,{ paddingLeft: '24px' }],
     ['quantity', 'Quantity', 'quantity'],
     ['rate', 'Rate', 'rate'],
     ['orderId', 'Order', ['orderId','name']],
     ['actions', 'Actions', 'actions', 'details', 'center'],
-    ['utilizationById', 'Utilized By', ['utilizationById','name'], 'table'],
     ['utilizationT', 'Utilization Time', 'utilizationT', 'table','left',formatTimestampToDate],
     ['description', 'Description', 'description','table'],
   ]),
@@ -193,13 +131,13 @@ const ADD_UTILIZATION_DATA = {
   getSingleQuery: `query Utilization($id: ID!){
     utilization(id: $id) ${getDataString}
   }`,
-  addNewQuery: `mutation AddUtilization($stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $utilizationStatus: AccessInput, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
-    addUtilization(stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, utilizationStatus: $utilizationStatus, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
+  addNewQuery: `mutation AddUtilization($item: String, $quantity: Float, $rate: Float, $utilizationT: String, $orderId: String, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
+    addUtilization(item: $item, quantity: $quantity, rate: $rate, utilizationT: $utilizationT, orderId: $orderId, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
       id
     }
   }`,
-  updateQuery: `mutation UpdateUtilization($id: ID!, $stockId: String, $quantity: Float, $rate: Float, $utilizationById: String, $utilizationT: String, $orderId: String, $utilizationStatus: AccessInput, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
-    updateUtilization(id: $id, stockId: $stockId, quantity: $quantity, rate: $rate, utilizationById: $utilizationById, utilizationT: $utilizationT, orderId: $orderId, utilizationStatus: $utilizationStatus, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
+  updateQuery: `mutation UpdateUtilization($id: ID!, $item: String, $quantity: Float, $rate: Float, $utilizationT: String, $orderId: String, $performedById: String, $performedT: String, $description: String, $changeLog: [String]) {
+    updateUtilization(id: $id, item: $item, quantity: $quantity, rate: $rate, utilizationT: $utilizationT, orderId: $orderId, performedById: $performedById, performedT: $performedT, description: $description, changeLog: $changeLog) {
       id
     }
   }`,
@@ -209,8 +147,6 @@ const ADD_UTILIZATION_DATA = {
     }
   }`,
   extractValues: {
-    stockId: ['id'],
-    utilizationById: ['id'],
     orderId: ['id']
   }
 };

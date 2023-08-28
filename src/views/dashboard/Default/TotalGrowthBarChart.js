@@ -100,39 +100,26 @@ const TotalGrowthBarChart = ({ isLoading }) => {
   }, [navType, primary200, primaryDark, secondaryMain, secondaryLight, primary, darkLight, grey200, isLoading, grey500, chartData]);
 
   useEffect(()=>{
-    if(!appStore.utilizationsStats) {
+    if(!appStore.orderProfitStats) {
       return;
     }
-    const createdData = createChartData(appStore.utilizationsStats)
+    const createdData = createChartData(appStore.orderProfitStats)
+    console.log("createdData", createdData)
     setChartData(createdData);
-  },[appStore.utilizationsStats])
+  },[appStore.orderProfitStats])
 
   useEffect(()=>{
     dispatch({
-      type: "UTILIZATIONS_STATS_FETCH_REQUESTED",
+      type: "ORDER_PROFIT_FETCH_REQUESTED",
       payload: {
-        query: `query UtilizationStats($fromT: String, $toT: String) {
-          utilizationStats(fromT: $fromT, toT: $toT) {
-            totalUtilizations
-            totalApproved
-            totalRejected
-            totalInProgress
-            totalCost
-            stocks {
+        query: `query orderProfitStats($fromT: String, $toT: String) {
+          orderProfitStats(fromT: $fromT, toT: $toT) {
+            ordersData {
               id
               name
-              totalUtilizations
-              totalApproved
-              totalRejected
-              totalInProgress
-              totalCost
-              approvedQtyCost
-              rejectedQtyCost
-              inProgressQtyCost
+              totalUtilization
+              totalIncome
             }
-            approvedQtyCost
-            rejectedQtyCost
-            inProgressQtyCost
           }
         }`,
         variables: {
@@ -155,10 +142,10 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                 <Grid item>
                   <Grid container direction="column" spacing={1}>
                     <Grid item>
-                      <Typography variant="subtitle2">Total Utilizations</Typography>
+                      <Typography variant="subtitle2">Total Orders</Typography>
                     </Grid>
                     <Grid item>
-                      <Typography variant="h3">{appStore.utilizationsStats.totalUtilizations}</Typography>
+                      <Typography variant="h3">{appStore.orderProfitStats.ordersData.length}</Typography>
                     </Grid>
                   </Grid>
                 </Grid>

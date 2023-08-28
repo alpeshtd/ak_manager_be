@@ -1,5 +1,5 @@
 import { getExpense } from "api/api";
-import { formatTimestampToDate, getStatusComp } from "utils/utils";
+import { formatTimestampToDate } from "utils/utils";
 
 function createData(arr) {
   let tempData = {};
@@ -22,37 +22,22 @@ function createData(arr) {
 const getDataString = `{
   id
   amount
-  expenseById {
-    id
-    name
-  }
   expenseT
-  paidAmount
-  orderId {
+  vendorId {
     id
     name
   }
-  remainingAmount
   paymentMode {
     id
     label
     value
   }
   description
-  expenseStatus {
-    id
-    label
-    value
-  }
   performedById {
     id
     firstName
   }
   performedT
-  expenseConfirmedById {
-    id
-    firstName
-  }
   changeLog
 }`;
 
@@ -76,70 +61,21 @@ const ADD_EXPENSE_DATA = {
       label: 'Amount*',
       required: true,
       value: '',
-      dependant: ['remainingAmount']
     },
-    orderId: {
+    vendorId: {
       type: 'select',
-      placeHolder: 'Order',
-      label: 'Order*',
+      placeHolder: 'Vendor',
+      label: 'Vendor*',
       value: null,
       options: [],
       setOptions: (store) => {
-        const loadedOptions = store.overview.orders;
+        const loadedOptions = store.elements.vendors;
         return loadedOptions.map((opt) => {
           return { label: opt.name, id: opt.id, value: opt.id };
         });
       },
       setValue: (val) => {
         return { label: val.name, id: val.id, value: val.id };
-      }
-    },
-    expenseById: {
-      type: 'select',
-      placeHolder: 'Expense By',
-      label: 'Expense By*',
-      value: null,
-      options: [],
-      setOptions: (store) => {
-        const loadedOptions = store.elements.employees;
-        return loadedOptions.map((opt) => {
-          return { label: opt.name, id: opt.id, value: opt.id };
-        });
-      },
-      setValue: (val) => {
-        return { label: val.name, id: val.id, value: val.id };
-      }
-    },
-    paidAmount: {
-      type: 'number',
-      placeHolder: 'Paid Amount',
-      label: 'Paid Amount*',
-      required: true,
-      value: '',
-      dependant: ['remainingAmount']
-    },
-    remainingAmount: {
-      type: 'number',
-      placeHolder: 'Remaining Amount',
-      label: 'Remaining Amount*',
-      required: true,
-      value: '',
-      dependancyFunc: (allFields, curKey, triggererKey) => {
-        const funSet = {
-          amount: () => {
-            return {
-              ...allFields[curKey],
-              value: allFields.amount.value - allFields.paidAmount.value
-            }
-          },
-          paidAmount: () => {
-            return {
-              ...allFields[curKey],
-              value: allFields.amount.value - allFields.paidAmount.value
-            }
-          }
-        }
-        return funSet[triggererKey]();
       }
     },
     paymentMode: {
@@ -154,18 +90,6 @@ const ADD_EXPENSE_DATA = {
         { label: 'Phonepay', id: 'phonepay', value: 'phonepay' }
       ]
     },
-    expenseStatus: {
-      type: 'select',
-      placeHolder: 'Status*',
-      label: 'Status*',
-      value: null,
-      options: [
-        { id: 'requested', label: 'Requested', value: 'requested' },
-        { id: 'pending', label: 'Pending', value: 'pending' },
-        { id: 'approved', label: 'Approved', value: 'approved' },
-        { id: 'rejected', label: 'Rejected', value: 'rejected' }
-      ]
-    },
     description: {
       type: 'textArea',
       placeHolder: 'Some details',
@@ -177,13 +101,9 @@ const ADD_EXPENSE_DATA = {
   tableHeading: createData([
     ['expenseT', 'Date', 'expenseT',null,'left',formatTimestampToDate, { paddingLeft: '24px' }],
     ['amount', 'Amount', 'amount'],
-    ['expenseStatus', 'Status', ['expenseStatus','label'], null,'left', getStatusComp],
-    ['remainingAmount', 'Remaining Amount', 'remainingAmount'],
-    ['paymentMode', 'Payment Mode', ['paymentMode','label'], 'table'],
+    ['paymentMode', 'Payment Mode', ['paymentMode','label']],
+    ['description', 'Description', 'description'],
     ['actions', 'Actions', 'actions', 'details', 'center'],
-    ['expenseById', 'Purchase By', ['expenseById','name'], 'table'],
-    ['expenseConfirmedById', 'Confirmed By', ['expenseConfirmedById','firstName'], 'table'],
-    ['description', 'Description', 'description','table']
   ]),
   getDispatchType: 'EXPENSES_FETCH_REQUESTED',
   getQuery: `query Expenses {
@@ -193,14 +113,14 @@ const ADD_EXPENSE_DATA = {
   getSingleQuery: `query Expense($id: ID!){
     expense(id: $id) ${getDataString}
   }`,
-  addNewQuery: `mutation AddExpense($amount: Float, $expenseById: String, $expenseT: String, $paidAmount: Float, $orderId: String, $remainingAmount: Float, $paymentMode: AccessInput, $description: String, $expenseStatus: AccessInput, $performedById: String, $performedT: String, $changeLog: [String], $expenseConfirmedById: String) {
-    addExpense(amount: $amount, expenseById: $expenseById, expenseT: $expenseT, paidAmount: $paidAmount, orderId: $orderId, remainingAmount: $remainingAmount, paymentMode: $paymentMode, description: $description, expenseStatus: $expenseStatus, performedById: $performedById, performedT: $performedT, changeLog: $changeLog, expenseConfirmedById: $expenseConfirmedById) {
+  addNewQuery: `mutation AddExpense($amount: Float, $expenseT: String, $vendorId: String, $paymentMode: AccessInput, $description: String, $performedById: String, $performedT: String, $changeLog: [String]) {
+    addExpense(amount: $amount, expenseT: $expenseT, vendorId: $vendorId, paymentMode: $paymentMode, description: $description, performedById: $performedById, performedT: $performedT, changeLog: $changeLog) {
       id
       amount
     }
   }`,
-  updateQuery: `mutation UpdateExpense($id: ID!, $amount: Float, $expenseById: String, $expenseT: String, $paidAmount: Float, $orderId: String, $remainingAmount: Float, $paymentMode: AccessInput, $description: String, $expenseStatus: AccessInput, $performedById: String, $performedT: String, $expenseConfirmedById: String, $changeLog: [String]) {
-    updateExpense(id: $id, amount: $amount, expenseById: $expenseById, expenseT: $expenseT, paidAmount: $paidAmount, orderId: $orderId, remainingAmount: $remainingAmount, paymentMode: $paymentMode, description: $description, expenseStatus: $expenseStatus, performedById: $performedById, performedT: $performedT, expenseConfirmedById: $expenseConfirmedById, changeLog: $changeLog) {
+  updateQuery: `mutation UpdateExpense($id: ID!, $amount: Float, $expenseT: String, $vendorId: String, $paymentMode: AccessInput, $description: String, $performedById: String, $performedT: String, $changeLog: [String]) {
+    updateExpense(id: $id, amount: $amount, expenseT: $expenseT, vendorId: $vendorId, paymentMode: $paymentMode, description: $description, performedById: $performedById, performedT: $performedT, changeLog: $changeLog) {
       id
       amount
     }
@@ -212,8 +132,7 @@ const ADD_EXPENSE_DATA = {
     }
   }`,
   extractValues: {
-    expenseById: ['id'],
-    orderId: ['id'],
+    vendorId: ['id'],
   },
   updateStatus: (action, data, userId) => {
     const updatedData = {};
